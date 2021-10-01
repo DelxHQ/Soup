@@ -1,0 +1,24 @@
+{
+  "name": "Soup",
+  "version": "1.0.0",
+  "description": "A fully featued music bot for Discord",
+  "main": "src/main.ts",
+  "repository": "https://github.com/DelxHQ/Soup",
+  "author": "Dylan Ogle <delxhq0@gmail.com>",
+  "scripts": {
+    "start": "ts-node -T src/main.ts"
+  },
+  "license": "MIT",
+  "private": true,
+  "dependencies": {
+    "@bwatton/logger": "^1.0.6",
+    "discord.js": "^13.1.0",
+    "erela.js": "^2.3.3"
+  },
+  "devDependencies": {
+    "@tsconfig/node16": "^1.0.2",
+    "@types/node": "^16.10.2",
+    "ts-node": "^10.2.1",
+    "typescript": "^4.4.3"
+  }
+}
