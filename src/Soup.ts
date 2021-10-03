@@ -41,7 +41,7 @@ export class Soup extends Client {
       ]
     })
 
-    this.on('message', message => this.onMessageReceived(message))
+    this.on('messageCreate', message => this.onMessageReceived(message))
     this.on('raw', d => this.manager.updateVoiceState(d))
 
     this.manager.on('nodeError', (node, error) => {
