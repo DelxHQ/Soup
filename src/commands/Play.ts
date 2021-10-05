@@ -1,3 +1,5 @@
+import { TextChannel } from 'discord.js'
+import { Track } from '../util/helpers'
 import { Category, Command, IRun } from '../Command'
 
 export const Play = new (class extends Command {
@@ -7,28 +9,24 @@ export const Play = new (class extends Command {
   public description = 'Play some music'
   public aliases = []
 
-  public async run({ soup, message, args }: IRun) {
-    if (!message.member.voice) return message.reply("you need to join a voice channel.")
+  public async run({ soup, message, args, player }: IRun) {
+    if (!message.member.voice.channel) return message.reply('You need to be in a voice channel to use this command.')
 
-    const search = args.join(" ");
+    const { tracks, playlist } = await player.searchTrack(args.join(' '))
 
-    const res = await soup.manager.search(search, message.author)
+    await player.initPlayer(message.channel.id, message.member.voice.channel.id)
 
-    const player = soup.manager.create({
-      guild: message.guild.id,
-      voiceChannel: message.member.voice.channel.id,
-      textChannel: message.channel.id,
-      selfDeafen: true
-    })
+    player.queueChannel = (message.channel as TextChannel)
 
-    player.connect()
-    
-    message.reply(`enqueuing ${res.tracks[0].title}.`)
+    for (const track of tracks) {
+      if (!player.queue.length) {
+        const trackNo = player.enqueue(track)
+        player.play(trackNo)
+      } else {
+        player.enqueue(track)
 
-    player.queue.add(res.tracks[0])
-
-    if (!player.playing) {
-      player.play()
+        if(!playlist) message.channel.send({ embeds: [Track('Added to Queue', track)] })
+      }
     }
   }
-})
+})()

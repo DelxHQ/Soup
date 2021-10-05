@@ -1,5 +1,6 @@
-import { Client, Message as DMessage, ClientUser, Intents } from 'discord.js'
+import { Client, Message as DMessage, ClientUser, Intents, Guild } from 'discord.js'
 import { Command } from './Command'
+import { PlayerManager } from './managers/PlayerManager'
 import * as cmdList from './commands'
 import Logger from '@bwatton/logger'
 import { Manager, NodeOptions } from 'erela.js'
@@ -12,6 +13,10 @@ export class Soup extends Client {
 
   public commands: {
     [k: string]: Command,
+  } = {}
+
+  private playerInstances: {
+    [k: string]: PlayerManager,
   } = {}
 
   public cmds: Command[] = []
@@ -42,6 +47,7 @@ export class Soup extends Client {
     })
 
     this.on('messageCreate', message => this.onMessageReceived(message))
+
     this.on('raw', d => this.manager.updateVoiceState(d))
 
     this.manager.on('nodeError', (node, error) => {
@@ -64,9 +70,9 @@ export class Soup extends Client {
       throw new Error('Error logging in to Discord - `user` undefined')
     }
 
-    this.manager.init(this.client.id)
     this.logger.info(`Logged in as ${this.client.username}`)
 
+    this.manager.init(this.user.id)
     await this.loadCommands()
   }
 
@@ -120,12 +126,21 @@ export class Soup extends Client {
 
       if (!this.commands[cmdStr]) return
 
+      let player: PlayerManager
+      if (this.playerInstances[message.guild.id]) {
+        player = this.playerInstances[message.guild.id]
+      } else {
+        player = new PlayerManager(message.guild, this)
+        this.playerInstances[message.guild.id] = player
+      }
+
       const cmd = this.commands[cmdStr]
 
       await cmd.run({
         soup: this,
         message,
         args,
+        player,
       })
     }
   }

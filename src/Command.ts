@@ -1,4 +1,5 @@
 import { Soup } from './Soup'
+import { PlayerManager } from './managers/PlayerManager'
 import { Permission } from './util/Permissions'
 import { Message } from 'discord.js'
 
@@ -14,6 +15,7 @@ export interface IRun {
   soup: Soup,
   message: Message,
   args: string[],
+  player: PlayerManager,
 }
 
 export abstract class Command {
