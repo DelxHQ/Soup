@@ -4,7 +4,7 @@
 
 <p align="center">
     <a href="https://github.com/DelxHQ/Soup/blob/master/LICENSE"><img src="https://img.shields.io/github/license/DelxHQ/Soup?style=for-the-badge&color=fbedff"></a>
-    <a href="https://github.com/DelxHQ/Soup/actions"><img src="https://img.shields.io/github/workflow/status/DelxHQ/Soup/publish/master?style=for-the-badge"></a>
+    <a href="https://github.com/DelxHQ/Soup/actions"><img src="https://img.shields.io/github/workflow/status/DelxHQ/Soup/publish?style=for-the-badge"></a>
 </p>
 
 <h1 align="center">Warning</h1>
