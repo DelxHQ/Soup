@@ -24,7 +24,7 @@ export class Soup extends Client {
 
   public lavalinkNodes: NodeOptions[] = [{
     identifier: 'lavalink-eu-1',
-    host: 'localhost',
+    host: process.env.LAVALINK_HOST,
     password: 'youshallnotpass',
     port: 2333,
   }]
