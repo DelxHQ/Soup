@@ -4,8 +4,7 @@ import { Soup } from '../Soup'
 import { LoadType } from '../types/types'
 import fetch from 'node-fetch'
 import { Player, TrackUtils } from 'erela.js'
-import { Track } from '../util/helpers'
-
+import { RichEmbed, Track } from '../util/helpers'
 
 export interface GuildTrack {
   id: string
@@ -30,21 +29,37 @@ export class PlayerManager {
   public set player(player: Player | null) {
     if (this.realPlayer) {
       this.realPlayer.stop()
-      // this.realPlayer.disconnect()
+      this.realPlayer.disconnect()
       this.realPlayer.destroy()
     }
 
     this.realPlayer = player
     if (!player) return
+
+    this.player.manager.on('queueEnd', () => {
+      if (this.track > -1 && this.queue[this.track + 1]) {
+        const trackIndex = ++this.track
+        this.play(trackIndex + 1)
+      } else if (this.loop === 'track') {
+        this.play(this.track + 1)
+      } else if (this.loop === 'queue') {
+        this.play(1)
+      } else {
+        if (this.queueChannel) this.queueChannel.send({ embeds: [RichEmbed('End of queue, leaving channel')] })
+        this.player = null
+        this.queueChannel = null
+        this.queue = []
+      }
+    })
   }
 
   constructor(public guild: GuildClass, private soup: Soup) { }
 
   public queue: GuildTrack[] = []
   public queueChannel: TextChannel | null = null
+  public loop: 'off' | 'queue' | 'track' = 'off'
   private realPlayer: Player | null = null
   private track: number = -1
-
 
   public async initPlayer(textChannelId: string, voiceChannelId: string) {
     if (this.realPlayer) return this.realPlayer
@@ -76,7 +91,20 @@ export class PlayerManager {
     this.player.play(unresolvedTrack)
 
     const currentTrack = this.queue[this.track]
-    if (this.queueChannel) this.queueChannel.send({ embeds: [Track('Now Playing', currentTrack)] })
+
+    this.player.manager.once('trackStart', () => {
+      if (this.queueChannel) this.queueChannel.send({ embeds: [Track('Now Playing', currentTrack)] })
+    })
+  }
+
+  public skipSong() {
+    if (!this.realPlayer) return null
+
+    const track = this.queue[this.track + 1] || null
+
+    this.realPlayer.stop()
+
+    return track
   }
 
   public async searchTrack(query: string): Promise<{
@@ -84,35 +112,28 @@ export class PlayerManager {
     playlist: { name: string } | null
   }> {
     return new Promise(async resolve => {
-      const node = this.soup.manager.nodes.first().options
-
-      let identifier: string
-
-      if (query.startsWith('http://') || query.startsWith('https://')) {
-        identifier = `identifier=${encodeURI(query)}`
-      } else {
-        const params = new URLSearchParams()
-        params.append('identifier', `ytsearch: ${query}`)
-        identifier = params.toString()
+      const res = await this.player.search(query)
+      switch (res.loadType.toUpperCase()) {
+        case LoadType.TRACK_LOADED:
+        case LoadType.SEARCH_RESULT:
+          console.log(res.tracks[0])
+          return resolve({
+            tracks: [this.lavalinkToGuildTrack(res.tracks[0])],
+            playlist: null
+          })
+        case LoadType.PLAYLIST_LOADED:
+          return resolve({
+            tracks: res.tracks.map((t: any) => this.lavalinkToGuildTrack(t)),
+            playlist: {
+              name: res.playlist.name,
+            },
+          })
+        default:
+          return resolve({
+            tracks: [],
+            playlist: null,
+          })
       }
-
-      fetch(`http://${node.host}:${node.port}/loadtracks?${identifier}`, {
-        headers: {
-          Authorization: node.password || '',
-        },
-      }).then(res => res.json())
-        .then(res => {
-          switch (res.loadType.toUpperCase()) {
-            case LoadType.TRACK_LOADED:
-            case LoadType.SEARCH_RESULT:
-              return resolve({
-                tracks: [this.lavalinkToGuildTrack(res.tracks[0])],
-                playlist: null
-              })
-            case LoadType.PLAYLIST_LOADED:
-            // TODO: Add playlist support.
-          }
-        })
     })
   }
 
@@ -133,13 +154,13 @@ export class PlayerManager {
   }
 
   private lavalinkToGuildTrack(llTrack: any): GuildTrack {
-    const { track, info: { identifier, author, length, title, uri } } = llTrack
+    const { track, identifier, author, duration, title, uri } = llTrack
 
     return {
       track,
       id: identifier,
       author,
-      duration: this.duration(length),
+      duration: this.duration(duration),
       title,
       link: uri,
       thumb: `https://img.youtube.com/vi/${identifier}/maxresdefault.jpg`,

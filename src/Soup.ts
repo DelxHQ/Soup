@@ -4,6 +4,7 @@ import { PlayerManager } from './managers/PlayerManager'
 import * as cmdList from './commands'
 import Logger from '@bwatton/logger'
 import { Manager, NodeOptions } from 'erela.js'
+import Spotify from 'erela.js-spotify'
 
 export class Soup extends Client {
 
@@ -34,7 +35,13 @@ export class Soup extends Client {
       const guild = this.guilds.cache.get(id)
 
       if (guild) guild.shard.send(payload)
-    }
+    },
+    plugins: [
+      new Spotify({
+        clientID: process.env.SPOTIFY_CLIENTID,
+        clientSecret: process.env.SPOTIFY_CLIENTSECRET,
+      })
+    ]
   })
 
   constructor(private loginToken: string) {

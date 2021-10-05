@@ -12,9 +12,9 @@ export const Play = new (class extends Command {
   public async run({ soup, message, args, player }: IRun) {
     if (!message.member.voice.channel) return message.reply('You need to be in a voice channel to use this command.')
 
-    const { tracks, playlist } = await player.searchTrack(args.join(' '))
-
     await player.initPlayer(message.channel.id, message.member.voice.channel.id)
+
+    const { tracks, playlist } = await player.searchTrack(args.join(' '))
 
     player.queueChannel = (message.channel as TextChannel)
 
