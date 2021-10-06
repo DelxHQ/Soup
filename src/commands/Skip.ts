@@ -1,9 +1,7 @@
-import { Message, TextChannel } from 'discord.js'
+import { TextChannel } from 'discord.js'
 
 import { Category, Command, IRun } from '../Command'
-import { Soup } from '../Soup'
-import { PlayerManager } from '../managers/PlayerManager'
-import { Error, RichEmbed, Track } from '../util/helpers'
+import { Error } from '../util'
 
 export const Skip = new (class extends Command {
 
@@ -13,8 +11,8 @@ export const Skip = new (class extends Command {
   public aliases = ['s', 'next']
   public permissions = []
 
-  public async run({ soup, message, args, player }: IRun) {
-    // if (!msg.member.voiceChannel) return msg.channel.send(Error('You must be in a voice channel to use this command'))
+  public async run({ message, player }: IRun) {
+    if (!message.member.voice.channel) return message.channel.send({ embeds: [Error('You must be in a voice channel to use this command')] })
 
     player.queueChannel = (message.channel as TextChannel)
     player.skipSong()

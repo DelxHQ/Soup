@@ -29,8 +29,8 @@ export class PlayerManager {
   public set player(player: Player | null) {
     if (this.realPlayer) {
       this.realPlayer.stop()
-      this.realPlayer.disconnect()
-      this.realPlayer.destroy()
+      // this.realPlayer.disconnect()
+      // this.realPlayer.destroy()
     }
 
     this.realPlayer = player
@@ -45,12 +45,18 @@ export class PlayerManager {
       } else if (this.loop === 'queue') {
         this.play(1)
       } else {
-        if (this.queueChannel) this.queueChannel.send({ embeds: [RichEmbed('End of queue, leaving channel')] })
+        // if (this.queueChannel) this.queueChannel.send({ embeds: [RichEmbed('End of queue, leaving channel')] })
         this.player = null
         this.queueChannel = null
         this.queue = []
       }
     })
+  }
+
+  public get currentTrack() {
+    if (this.track < 0 || !this.queue[this.track]) return null
+
+    return this.queue[this.track]
   }
 
   constructor(public guild: GuildClass, private soup: Soup) { }
@@ -105,6 +111,13 @@ export class PlayerManager {
     this.realPlayer.stop()
 
     return track
+  }
+
+  public clearQueue() {
+    if (!this.realPlayer) return
+
+    this.queue = []
+    this.player.stop()
   }
 
   public async searchTrack(query: string): Promise<{
