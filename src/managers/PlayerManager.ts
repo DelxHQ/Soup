@@ -98,9 +98,9 @@ export class PlayerManager {
 
     const currentTrack = this.queue[this.track]
 
-    this.player.manager.once('trackStart', () => {
-      if (this.queueChannel) this.queueChannel.send({ embeds: [Track('Now Playing', currentTrack)] })
-    })
+    // this.player.manager.once('trackStart', () => {
+    //   if (this.queueChannel) this.queueChannel.send({ embeds: [Track('Now Playing', currentTrack)] })
+    // })
   }
 
   public skipSong() {
