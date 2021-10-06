@@ -34,7 +34,7 @@ export const Queue = new (class extends Command {
       ]),
     ).setFooter(`Page ${page}/${pages}`)
 
-    if (!message) message = (await message.channel.send({ embeds: [embed] }) as Message)
+    if (!message) message = (await msg.channel.send({ embeds: [embed] }) as Message)
     else {
       message.reactions.cache.clear()
       message = await message.edit({ embeds: [embed] })
