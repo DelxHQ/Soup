@@ -1,4 +1,4 @@
-import { Message, MessageReaction, TextChannel, User } from 'discord.js'
+import { BaseCommandInteraction, Message, MessageReaction, User } from 'discord.js'
 
 import { Category, Command, IRun } from '../Command'
 import { PlayerManager } from '../managers/PlayerManager'
@@ -10,21 +10,21 @@ export const Queue = new (class extends Command {
 
   public name = 'queue'
   public category = Category.Music
-  public description = 'View the song queue'
-  public aliases = ['q', 'songs']
+  public description = 'Display a list of songs in the queue.'
+  public options = []
   public permissions = []
 
-  public async run({ message, player }: IRun) {
-    if (!player.queue.length) return message.channel.send({ embeds: [Error('No tracks in queue')] })
+  public async run({ interaction, player }: IRun) {
+    if (!player.queue.length) return interaction.reply({ embeds: [Error('No tracks in queue')] })
 
     if (player.player && player.player.playing && player.currentTrack) {
-      message.channel.send({ embeds: [Track('Current Song', player.currentTrack)] })
+      interaction.reply({ embeds: [Track('Current Song', player.currentTrack)] })
     }
 
-    this.sendQueue(message, player)
+    this.sendQueue(interaction, player)
   }
 
-  private async sendQueue(msg: Message, player: PlayerManager, page: number = 1, message?: Message) {
+  private async sendQueue(interaction: BaseCommandInteraction, player: PlayerManager, page: number = 1, interact?: BaseCommandInteraction) {
     const pages = player.queue.length <= PAGE_SIZE ? 1 : Math.ceil(player.queue.length / PAGE_SIZE)
 
     const embed = RichEmbed(

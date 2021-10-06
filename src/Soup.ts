@@ -1,4 +1,4 @@
-import { Client, Message as DMessage, ClientUser, Intents, Guild } from 'discord.js'
+import { Client, Message, ClientUser, Intents, ApplicationCommandManager, GuildApplicationCommandManager, Interaction } from 'discord.js'
 import { Command } from './Command'
 import { PlayerManager } from './managers/PlayerManager'
 import * as cmdList from './commands'
@@ -53,8 +53,7 @@ export class Soup extends Client {
       ]
     })
 
-    this.on('messageCreate', message => this.onMessageReceived(message))
-
+    this.on('interactionCreate', interaction => this.onSlashCommand(interaction))
     this.on('raw', d => this.manager.updateVoiceState(d))
 
     this.manager.on('nodeError', (node, error) => {
@@ -81,6 +80,18 @@ export class Soup extends Client {
 
     this.manager.init(this.user.id)
     await this.loadCommands()
+
+    let commands: ApplicationCommandManager
+
+    commands = this.application.commands
+
+    for (const command of this.cmds) {
+      commands.create({
+        name: command.name,
+        description: command.description,
+        options: command.options,
+      })
+    }
   }
 
   private async loadCommands() {
@@ -91,12 +102,6 @@ export class Soup extends Client {
       const cmd = cmds[command]
       this.commands[cmd.name.toLowerCase()] = cmd
       this.cmds.push(cmd)
-
-      if (cmd.aliases) {
-        for await (const alias of cmd.aliases) {
-          this.commands[alias] = cmd
-        }
-      }
     }
   }
 
@@ -110,45 +115,31 @@ export class Soup extends Client {
     })
   }
 
-  private async onMessageReceived(message: DMessage) {
-    if (!message.guild) return
+  private async onSlashCommand(interaction: Interaction) {
+    if (!interaction.isCommand()) return
 
-    const prefix = '!'
+    const cmd = this.commands[interaction.commandName]
 
-    if (
-      message.content &&
-      (
-        (message.content.startsWith(prefix) && message.content.trim() !== prefix) ||
-        (message.content.startsWith(`<@!${this.client.id}>`) && message.content.trim() !== `<@!${this.client.id}>`) ||
-        (message.content.startsWith(`<@${this.client.id}>`) && message.content.trim() !== `<@${this.client.id}>`)
-      )
-    ) {
-      const content = message.content
-        .replace(new RegExp(`^(${this.escape(prefix)})`, 'gim'), '')
-        .replace(new RegExp(`^(<@!?${this.client.id}>)`, 'gim'), '')
-        .trim()
-      const contentParts = content.split(/\s/gm)
-      const cmdStr = contentParts[0].toLowerCase()
-      const args = contentParts.slice(1)
+    let player: PlayerManager
+    if (this.playerInstances[interaction.guild.id]) {
+      player = this.playerInstances[interaction.guild.id]
+    } else {
+      player = new PlayerManager(interaction.guild, this)
+      this.playerInstances[interaction.guild.id] = player
+    }
 
-      if (!this.commands[cmdStr]) return
+    const { options } = interaction
 
-      let player: PlayerManager
-      if (this.playerInstances[message.guild.id]) {
-        player = this.playerInstances[message.guild.id]
-      } else {
-        player = new PlayerManager(message.guild, this)
-        this.playerInstances[message.guild.id] = player
-      }
-
-      const cmd = this.commands[cmdStr]
-
-      await cmd.run({
+    try {
+      cmd.run({
         soup: this,
-        message,
-        args,
-        player,
+        interaction,
+        options,
+        player
       })
+    } catch (error) {
+      this.logger.error(error)
+      interaction.reply({ content: 'There was an error trying to run this command.', ephemeral: true })
     }
   }
 }

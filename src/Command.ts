@@ -1,7 +1,7 @@
 import { Soup } from './Soup'
 import { PlayerManager } from './managers/PlayerManager'
 import { Permission } from './util/Permissions'
-import { Message } from 'discord.js'
+import { ApplicationCommandOptionData, BaseCommandInteraction, CommandInteractionOptionResolver } from 'discord.js'
 
 export enum Category {
   Fun,
@@ -13,8 +13,8 @@ export enum Category {
 
 export interface IRun {
   soup: Soup,
-  message: Message,
-  args: string[],
+  interaction: BaseCommandInteraction,
+  options: CommandInteractionOptionResolver,
   player: PlayerManager,
 }
 
@@ -23,7 +23,7 @@ export abstract class Command {
   public abstract name: string
   public abstract category: Category
   public abstract description: string
-  public aliases: string[] = []
+  public abstract options: ApplicationCommandOptionData[]
   public permissions: Permission[] = []
 
   public abstract run(args: IRun): Promise<any>

@@ -1,8 +1,6 @@
 import { Guild as GuildClass, TextChannel } from 'discord.js'
-import { URLSearchParams } from 'url'
 import { Soup } from '../Soup'
 import { LoadType } from '../types/types'
-import fetch from 'node-fetch'
 import { Player, TrackUtils } from 'erela.js'
 import { RichEmbed, Track } from '../util/helpers'
 
@@ -98,9 +96,9 @@ export class PlayerManager {
 
     const currentTrack = this.queue[this.track]
 
-    // this.player.manager.once('trackStart', () => {
-    //   if (this.queueChannel) this.queueChannel.send({ embeds: [Track('Now Playing', currentTrack)] })
-    // })
+    this.player.manager.once('trackStart', () => {
+      if (this.queueChannel) this.queueChannel.send({ embeds: [Track('Now Playing', currentTrack)] })
+    })
   }
 
   public skipSong() {

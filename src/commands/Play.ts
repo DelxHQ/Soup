@@ -1,4 +1,4 @@
-import { TextChannel } from 'discord.js'
+import { Constants, GuildMember, TextChannel } from 'discord.js'
 import { Track } from '../util/helpers'
 import { Category, Command, IRun } from '../Command'
 
@@ -6,17 +6,24 @@ export const Play = new (class extends Command {
 
   public name = 'play'
   public category = Category.Music
-  public description = 'Play some music'
-  public aliases = []
+  public description = 'Plays a specified song and adds it to the queue.'
+  public options = [{
+    name: 'query',
+    description: 'A YouTube/Spotify query or link.',
+    required: true,
+    type: Constants.ApplicationCommandOptionTypes.STRING
+  }]
 
-  public async run({ message, args, player }: IRun) {
-    if (!message.member.voice.channel) return message.reply('You need to be in a voice channel to use this command.')
+  public async run({ interaction, options, player }: IRun) {
+    const guildMember = interaction.member as GuildMember
 
-    await player.initPlayer(message.channel.id, message.member.voice.channel.id)
+    if (!guildMember.voice.channel) return interaction.reply('You need to be in a voice channel to use this command.')
 
-    const { tracks, playlist } = await player.searchTrack(args.join(' '))
+    await player.initPlayer(interaction.channel.id, guildMember.voice.channel.id)
 
-    player.queueChannel = (message.channel as TextChannel)
+    const { tracks, playlist } = await player.searchTrack(options.getString('query'))
+
+    player.queueChannel = (interaction.channel as TextChannel)
 
     for (const track of tracks) {
       if (!player.queue.length) {
@@ -25,7 +32,7 @@ export const Play = new (class extends Command {
       } else {
         player.enqueue(track)
 
-        if(!playlist) message.channel.send({ embeds: [Track('Added to Queue', track)] })
+        if(!playlist) interaction.reply({ embeds: [Track('Added to Queue', track)] })
       }
     }
   }
