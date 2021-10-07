@@ -1,5 +1,5 @@
 FROM node:16.10-alpine3.11
-COPY app ./app
+COPY . /app
 WORKDIR /app
 RUN yarn
 RUN yarn build
@@ -10,5 +10,5 @@ WORKDIR /app
 COPY package.json ./
 ARG NODE_ENV=production
 RUN yarn
-COPY --from=0 /app/dist .
+##COPY --from=0 /app/dist .
 CMD ["yarn","start:prod"]
