@@ -1,4 +1,4 @@
-import { Client, Message, ClientUser, Intents, ApplicationCommandManager, GuildApplicationCommandManager, Interaction } from 'discord.js'
+import { Client, ClientUser, Intents, ApplicationCommandManager, GuildApplicationCommandManager, Interaction } from 'discord.js'
 import { Command } from './Command'
 import { PlayerManager } from './managers/PlayerManager'
 import * as cmdList from './commands'
