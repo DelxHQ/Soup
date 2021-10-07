@@ -1,5 +1,5 @@
 FROM node:16.10-alpine3.11
-COPY . /app
+COPY app ./app
 WORKDIR /app
 RUN yarn
 RUN yarn build
