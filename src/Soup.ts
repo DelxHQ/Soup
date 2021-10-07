@@ -54,7 +54,10 @@ export class Soup extends Client {
     })
 
     this.on('interactionCreate', interaction => this.onSlashCommand(interaction))
-    this.on('raw', d => this.manager.updateVoiceState(d))
+    this.on('raw', d => {
+      // this.logger.debug(d)
+      this.manager.updateVoiceState(d)
+    })
 
     this.manager.on('nodeError', (node, error) => {
       this.logger.info(`Node "${node.options.identifier}" encountered an error: ${error.message}`)
