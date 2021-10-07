@@ -7,7 +7,8 @@ RUN apk add --no-cache \
     ffmpeg \
     libtool \
     autoconf \
-    automake
+    automake \
+    git
 
 COPY . /app
 
