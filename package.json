@@ -15,10 +15,14 @@
   "private": false,
   "dependencies": {
     "@bwatton/logger": "^1.0.6",
+    "bufferutil": "^4.0.4",
     "discord.js": "^13.1.0",
     "erela.js": "^2.3.3",
     "erela.js-spotify": "^1.2.0",
-    "node-fetch": "^2.0.0"
+    "erlpack": "discord/erlpack",
+    "node-fetch": "^2.0.0",
+    "utf-8-validate": "^5.0.6",
+    "zlib-sync": "^0.1.7"
   },
   "devDependencies": {
     "@tsconfig/node16": "^1.0.2",
