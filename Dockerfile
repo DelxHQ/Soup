@@ -4,6 +4,8 @@ COPY . /app
 
 WORKDIR /app
 
+ARG NODE_ENV=production
+
 RUN yarn
 RUN yarn build
 
