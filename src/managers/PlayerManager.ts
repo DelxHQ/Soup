@@ -127,7 +127,6 @@ export class PlayerManager {
       switch (res.loadType.toUpperCase()) {
         case LoadType.TRACK_LOADED:
         case LoadType.SEARCH_RESULT:
-          console.log(res.tracks[0])
           return resolve({
             tracks: [this.lavalinkToGuildTrack(res.tracks[0])],
             playlist: null
