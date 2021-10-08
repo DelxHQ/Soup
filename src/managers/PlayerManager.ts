@@ -9,7 +9,7 @@ export interface GuildTrack {
   title: string,
   author: string,
   link: string,
-  thumb: string | null,
+  thumbnail: string | null,
   duration: string,
   track: string,
 }
@@ -28,7 +28,7 @@ export class PlayerManager {
     if (this.realPlayer) {
       this.realPlayer.stop()
       // this.realPlayer.disconnect()
-      // this.realPlayer.destroy()
+      this.realPlayer.destroy()
     }
 
     this.realPlayer = player
@@ -127,11 +127,13 @@ export class PlayerManager {
       switch (res.loadType.toUpperCase()) {
         case LoadType.TRACK_LOADED:
         case LoadType.SEARCH_RESULT:
+          console.log(res.tracks[0])
           return resolve({
             tracks: [this.lavalinkToGuildTrack(res.tracks[0])],
             playlist: null,
           })
         case LoadType.PLAYLIST_LOADED:
+          console.log(res.tracks)
           return resolve({
             tracks: res.tracks.map((t: any) => this.lavalinkToGuildTrack(t)),
             playlist: {
@@ -164,7 +166,7 @@ export class PlayerManager {
   }
 
   private lavalinkToGuildTrack(llTrack: any): GuildTrack {
-    const { track, identifier, author, duration, title, uri } = llTrack
+    const { track, identifier, author, duration, title, uri, thumbnail } = llTrack
 
     return {
       track,
@@ -173,7 +175,7 @@ export class PlayerManager {
       duration: this.duration(duration),
       title,
       link: uri,
-      thumb: `https://img.youtube.com/vi/${identifier}/maxresdefault.jpg`,
+      thumbnail,
     }
   }
 }
