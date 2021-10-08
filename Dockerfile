@@ -1,7 +1,8 @@
 FROM node:16.10-alpine3.11
 
 RUN apk add --no-cache \
-    python3
+    python3 \
+    make
 
 COPY . /app
 
