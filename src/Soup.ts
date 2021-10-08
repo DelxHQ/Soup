@@ -5,7 +5,7 @@ import Logger from '@bwatton/logger'
 import { Manager, NodeOptions } from 'erela.js'
 import Spotify from 'better-erela.js-spotify'
 import { PlayerEventHandler } from './eventHandlers/PlayerEventHandler'
-import { Error } from './util'
+import { Error as ErrorEmbed } from './util'
 
 export class Soup extends Client {
 
@@ -130,7 +130,7 @@ export class Soup extends Client {
 
     try {
       if (cmd.voiceOnly && !(interaction.member as GuildMember).voice.channel) {
-        return interaction.reply({ embeds: [Error(`You need to be in a voice channel to run the \`${cmd.name}\` command.`)] })
+        return interaction.reply({ embeds: [ErrorEmbed(`You need to be in a voice channel to run the \`${cmd.name}\` command.`)] })
       }
       cmd.run({
         soup: this,
