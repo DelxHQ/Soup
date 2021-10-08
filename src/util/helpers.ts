@@ -1,4 +1,5 @@
-import { ColorResolvable, Message, MessageEmbed, MessageEmbed as RE, User } from 'discord.js'
+import { ColorResolvable, MessageEmbed, MessageEmbed as RE } from 'discord.js'
+import { Track } from 'erela.js'
 
 export type RichEmbedField = [string, (string | number), boolean?]
 
@@ -44,7 +45,7 @@ export function Image(src: string, title?: string, desc?: string): MessageEmbed 
   return e
 }
 
-export function Track(embedTitle: string, track: GuildTrack): MessageEmbed {
+export function Track(embedTitle: string, track: Track): MessageEmbed {
   const re = new RE()
     .setAuthor(embedTitle)
     .setTitle(track.title)
@@ -53,21 +54,9 @@ export function Track(embedTitle: string, track: GuildTrack): MessageEmbed {
     .setFooter(duration(track.duration))
     .setColor('#f2df88')
 
-  if (track.thumbnail) re.setThumbnail(track.thumbnail)
+  if (track.thumbnail) re.setThumbnail(track.displayThumbnail('maxresdefault'))
 
   return re
-}
-
-export function shuffleArr(arr: Array<any>): any[] {
-  let inputArray: any[] = arr
-  for (let i: number = inputArray.length - 1; i >= 0; i--) {
-    let randomIndex: number = Math.floor(Math.random() * (i + 1))
-    let itemAtIndex: number = inputArray[randomIndex]
-
-    inputArray[randomIndex] = inputArray[i]
-    inputArray[i] = itemAtIndex
-  }
-  return inputArray
 }
 
 export function duration(ms: number): string {

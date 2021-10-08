@@ -10,7 +10,7 @@ export const Vaporwave = new (class extends Command {
   public permissions = []
 
   public async run({ soup, interaction }: IRun) {
-    const guildPlayer = soup.manager.players.get(interaction.guild.id)
+    // const guildPlayer = soup.manager.players.get(interaction.guild.id)
   
   }
 })()

@@ -1,7 +1,6 @@
 import { BaseCommandInteraction, Message, MessageReaction, User } from 'discord.js'
 
 import { Category, Command, IRun } from '../Command'
-import { PlayerManager } from '../managers/PlayerManager'
 import { Error, RichEmbed, Track } from '../util/helpers'
 
 const PAGE_SIZE = 10
@@ -17,10 +16,10 @@ export const Queue = new (class extends Command {
 
 
   public async run({ interaction }: IRun) {
-    if (!player.queue.length) return interaction.reply({ embeds: [Error('No tracks in queue')] })
+    // if (!player.queue.length) return interaction.reply({ embeds: [Error('No tracks in queue')] })
 
-    if (player.player && player.player.playing && player.currentTrack) {
-      interaction.reply({ embeds: [Track('Current Song', player.currentTrack)] })
+    // if (player.player && player.player.playing && player.currentTrack) {
+    //   interaction.reply({ embeds: [Track('Current Song', player.currentTrack)] })
     }
 
     // this.sendQueue(interaction, player)
