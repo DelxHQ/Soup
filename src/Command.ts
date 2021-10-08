@@ -1,5 +1,4 @@
 import { Soup } from './Soup'
-import { PlayerManager } from './managers/PlayerManager'
 import { Permission } from './util/Permissions'
 import { ApplicationCommandOptionData, BaseCommandInteraction, CommandInteractionOptionResolver } from 'discord.js'
 
@@ -15,7 +14,6 @@ export interface IRun {
   soup: Soup,
   interaction: BaseCommandInteraction,
   options: CommandInteractionOptionResolver,
-  player: PlayerManager,
 }
 
 export abstract class Command {
@@ -25,6 +23,7 @@ export abstract class Command {
   public abstract description: string
   public abstract options: ApplicationCommandOptionData[]
   public permissions: Permission[] = []
+  public voiceOnly: boolean
 
   public abstract run(args: IRun): Promise<any>
 

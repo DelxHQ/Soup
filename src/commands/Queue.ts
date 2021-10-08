@@ -13,8 +13,10 @@ export const Queue = new (class extends Command {
   public description = 'Display a list of songs in the queue.'
   public options = []
   public permissions = []
+  public voiceOnly = true
 
-  public async run({ interaction, player }: IRun) {
+
+  public async run({ interaction }: IRun) {
     if (!player.queue.length) return interaction.reply({ embeds: [Error('No tracks in queue')] })
 
     if (player.player && player.player.playing && player.currentTrack) {

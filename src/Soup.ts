@@ -1,10 +1,11 @@
-import { Client, ClientUser, Intents, ApplicationCommandManager, Interaction } from 'discord.js'
+import { Client, ClientUser, GuildMember, Intents, Interaction } from 'discord.js'
 import { Command } from './Command'
-import { PlayerManager } from './managers/PlayerManager'
 import * as cmdList from './commands'
 import Logger from '@bwatton/logger'
 import { Manager, NodeOptions } from 'erela.js'
 import Spotify from 'better-erela.js-spotify'
+import { PlayerEventHandler } from './eventHandlers/PlayerEventHandler'
+import { Error } from './util'
 
 export class Soup extends Client {
 
@@ -14,10 +15,6 @@ export class Soup extends Client {
 
   public commands: {
     [k: string]: Command,
-  } = {}
-
-  private playerInstances: {
-    [k: string]: PlayerManager,
   } = {}
 
   public cmds: Command[] = []
@@ -36,7 +33,12 @@ export class Soup extends Client {
 
       if (guild) guild.shard.send(payload)
     },
-    plugins: [new Spotify({ convertUnresolved: true })],
+    plugins: [
+      new Spotify({
+        strategy: 'API',
+        clientId: process.env.SPOTIFY_CLIENTID,
+        clientSecret: process.env.SPOTIFY_CLIENTSECRET,
+      })],
   })
 
   constructor(private loginToken: string) {
@@ -80,18 +82,23 @@ export class Soup extends Client {
     this.manager.init(this.user.id)
     await this.loadCommands()
 
-    let commands: ApplicationCommandManager
+    new PlayerEventHandler(this).init()
 
-    // eslint-disable-next-line prefer-const
-    commands = this.application.commands
+    /*
+    * TODO: This needs to become a script.
+    */
 
-    for (const command of this.cmds) {
-      commands.create({
-        name: command.name,
-        description: command.description,
-        options: command.options,
-      })
-    }
+    // let commands: ApplicationCommandManager
+
+    // commands = this.application.commands
+
+    // for (const command of this.cmds) {
+    //   commands.create({
+    //     name: command.name,
+    //     description: command.description,
+    //     options: command.options,
+    //   })
+    // }
   }
 
   private async loadCommands() {
@@ -119,23 +126,16 @@ export class Soup extends Client {
     if (!interaction.isCommand()) return
 
     const cmd = this.commands[interaction.commandName]
-
-    let player: PlayerManager
-    if (this.playerInstances[interaction.guild.id]) {
-      player = this.playerInstances[interaction.guild.id]
-    } else {
-      player = new PlayerManager(interaction.guild, this)
-      this.playerInstances[interaction.guild.id] = player
-    }
-
     const { options } = interaction
 
     try {
+      if (cmd.voiceOnly && !(interaction.member as GuildMember).voice.channel) {
+        return interaction.reply({ embeds: [Error(`You need to be in a voice channel to run the \`${cmd.name}\` command.`)] })
+      }
       cmd.run({
         soup: this,
         interaction,
         options,
-        player,
       })
     } catch (error) {
       this.logger.error(error)

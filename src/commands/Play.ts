@@ -1,6 +1,7 @@
-import { Constants, GuildMember, TextChannel } from 'discord.js'
-import { Track } from '../util/helpers'
+import { Constants, GuildMember } from 'discord.js'
 import { Category, Command, IRun } from '../Command'
+import { SearchResult } from 'erela.js'
+import { RichEmbed, Track } from '../util'
 
 export const Play = new (class extends Command {
 
@@ -13,26 +14,46 @@ export const Play = new (class extends Command {
     required: true,
     type: Constants.ApplicationCommandOptionTypes.STRING,
   }]
+  public voiceOnly = true
 
-  public async run({ interaction, options, player }: IRun) {
+  public async run({ soup, interaction, options }: IRun) {
     const guildMember = interaction.member as GuildMember
 
-    if (!guildMember.voice.channel) return interaction.reply('You need to be in a voice channel to use this command.')
+    const player = soup.manager.create({
+      guild: interaction.guild.id,
+      voiceChannel: guildMember.voice.channel.id,
+      textChannel: interaction.channel.id,
+      selfDeafen: true,
+    })
 
-    await player.initPlayer(interaction.channel.id, guildMember.voice.channel.id)
+    let res: SearchResult
 
-    const { tracks, playlist } = await player.searchTrack(options.getString('query'))
+    try {
+      res = await player.search(options.getString('query'), interaction.member)
+      if (res.loadType === 'LOAD_FAILED') {
+        if (!player.queue.current) player.destroy()
+        throw res.exception
+      }
+    } catch (err) {
+      //
+    }
+    if (res.loadType == 'NO_MATCHES') {
+      if (!player.queue.current) player.destroy()
 
-    player.queueChannel = (interaction.channel as TextChannel)
-
-    for (const track of tracks) {
-      if (!player.queue.length) {
-        const trackNo = player.enqueue(track)
-        player.play(trackNo)
+    } else if (res.loadType == 'PLAYLIST_LOADED') {
+      if (player.state !== 'CONNECTED') player.connect()
+      player.queue.add(res.tracks)
+      interaction.reply({  embeds: [RichEmbed('Queued playlist', `\`${res.playlist.name}\`. \`${res.tracks.length}\` tracks.`)] })
+  
+      if (!player.playing && !player.paused && player.queue.totalSize === res.tracks.length) player.play()
+    } else {
+      if (player.state !== 'CONNECTED') player.connect()
+      player.queue.add(res.tracks[0])
+      interaction.reply({ embeds: [Track('Added to queue', res.tracks[0])] })
+      if (!player.playing && !player.paused && !player.queue.size) {
+        player.play()
       } else {
-        player.enqueue(track)
-
-        if(!playlist) interaction.reply({ embeds: [Track('Added to Queue', track)] })
+        //
       }
     }
   }

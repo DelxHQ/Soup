@@ -1,7 +1,5 @@
-import { GuildMember, TextChannel } from 'discord.js'
-
 import { Category, Command, IRun } from '../Command'
-import { Error } from '../util'
+import { RichEmbed } from '../util'
 
 export const Skip = new (class extends Command {
 
@@ -10,13 +8,13 @@ export const Skip = new (class extends Command {
   public description = 'Skips the current playing song.'
   public options = []
   public permissions = []
+  public voiceOnly = true
 
-  public async run({ interaction, player }: IRun) {
-    const guildMember = interaction.member as GuildMember
+  public async run({ soup, interaction }: IRun) {
+    const guildPlayer = soup.manager.players.get(interaction.guild.id)
 
-    if (!guildMember.voice.channel) return interaction.reply({ embeds: [Error('You must be in a voice channel to use this command')] })
+    guildPlayer.stop()
 
-    player.queueChannel = (interaction.channel as TextChannel)
-    player.skipSong()
+    interaction.reply({ embeds: [RichEmbed('', 'Skipped the current track.')] })
   }
 })()

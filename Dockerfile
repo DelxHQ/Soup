@@ -13,10 +13,5 @@ RUN yarn
 RUN yarn build
 
 RUN rm -rf src
-RUN rm -rf node_modules
-
-ARG NODE_ENV=production
-
-RUN yarn
 
 CMD ["yarn", "start:prod"]

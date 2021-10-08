@@ -1,5 +1,4 @@
-import { ColorResolvable, MessageEmbed as RE, User } from 'discord.js'
-import { GuildTrack } from '../managers/PlayerManager'
+import { ColorResolvable, Message, MessageEmbed, MessageEmbed as RE, User } from 'discord.js'
 
 export type RichEmbedField = [string, (string | number), boolean?]
 
@@ -9,7 +8,7 @@ export function RichEmbed(
   fields: RichEmbedField[] = [],
   icon?: string | null,
   color: ColorResolvable = 'WHITE',
-) {
+): MessageEmbed {
   let realTitle: string | null = title
   if (!desc) {
     desc = title
@@ -30,11 +29,11 @@ export function RichEmbed(
   return embed
 }
 
-export function Error(msg: string) {
+export function Error(msg: string): MessageEmbed {
   return RichEmbed('Error ( ͒˃̩̩⌂˂̩̩ ͒)', msg)
 }
 
-export function Image(src: string, title?: string, desc?: string) {
+export function Image(src: string, title?: string, desc?: string): MessageEmbed {
   const e = new RE()
     .setImage(src)
     .setColor('#f2df88')
@@ -45,13 +44,13 @@ export function Image(src: string, title?: string, desc?: string) {
   return e
 }
 
-export function Track(embedTitle: string, track: GuildTrack) {
+export function Track(embedTitle: string, track: GuildTrack): MessageEmbed {
   const re = new RE()
     .setAuthor(embedTitle)
     .setTitle(track.title)
     .setDescription(track.author)
-    .setURL(track.link)
-    .setFooter(`${track.duration}`)
+    .setURL(track.uri)
+    .setFooter(duration(track.duration))
     .setColor('#f2df88')
 
   if (track.thumbnail) re.setThumbnail(track.thumbnail)
@@ -59,7 +58,7 @@ export function Track(embedTitle: string, track: GuildTrack) {
   return re
 }
 
-export function shuffleArr(arr: Array<any>) {
+export function shuffleArr(arr: Array<any>): any[] {
   let inputArray: any[] = arr
   for (let i: number = inputArray.length - 1; i >= 0; i--) {
     let randomIndex: number = Math.floor(Math.random() * (i + 1))
@@ -69,4 +68,20 @@ export function shuffleArr(arr: Array<any>) {
     inputArray[i] = itemAtIndex
   }
   return inputArray
+}
+
+export function duration(ms: number): string {
+  const hours = ms / (1000 * 60 * 60)
+  const absoluteHours = Math.floor(hours)
+  const h = absoluteHours > 9 ? absoluteHours : '0' + absoluteHours
+
+  const minutes = (hours - absoluteHours) * 60
+  const absoluteMinutes = Math.floor(minutes)
+  const m = absoluteMinutes > 9 ? absoluteMinutes : '0' + absoluteMinutes
+
+  const seconds = (minutes - absoluteMinutes) * 60
+  const absoluteSeconds = Math.floor(seconds)
+  const s = absoluteSeconds > 9 ? absoluteSeconds : '0' + absoluteSeconds
+
+  return h + ':' + m + ':' + s
 }
