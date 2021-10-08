@@ -11,7 +11,7 @@ export const Play = new (class extends Command {
     name: 'query',
     description: 'A YouTube/Spotify query or link.',
     required: true,
-    type: Constants.ApplicationCommandOptionTypes.STRING
+    type: Constants.ApplicationCommandOptionTypes.STRING,
   }]
 
   public async run({ interaction, options, player }: IRun) {

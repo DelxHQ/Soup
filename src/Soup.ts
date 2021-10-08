@@ -1,4 +1,4 @@
-import { Client, ClientUser, Intents, ApplicationCommandManager, GuildApplicationCommandManager, Interaction, Guild } from 'discord.js'
+import { Client, ClientUser, Intents, ApplicationCommandManager, Interaction } from 'discord.js'
 import { Command } from './Command'
 import { PlayerManager } from './managers/PlayerManager'
 import * as cmdList from './commands'
@@ -49,8 +49,8 @@ export class Soup extends Client {
       intents: [
         Intents.FLAGS.GUILDS,
         Intents.FLAGS.GUILD_MESSAGES,
-        Intents.FLAGS.GUILD_VOICE_STATES
-      ]
+        Intents.FLAGS.GUILD_VOICE_STATES,
+      ],
     })
 
     this.on('interactionCreate', interaction => this.onSlashCommand(interaction))
@@ -64,7 +64,7 @@ export class Soup extends Client {
       this.logger.info(`Node "${node.options.identifier}" encountered an error: ${error.message}`)
     })
 
-    this.manager.on("nodeConnect", node => {
+    this.manager.on('nodeConnect', node => {
       this.logger.info(`Node "${node.options.identifier}" connected`)
     })
   }
@@ -73,7 +73,7 @@ export class Soup extends Client {
     return this.user as ClientUser
   }
 
-  public async init() {
+  public async init(): Promise<void> {
     await this.login(this.loginToken)
 
     if (!this.user) {
@@ -87,6 +87,7 @@ export class Soup extends Client {
 
     let commands: ApplicationCommandManager
 
+    // eslint-disable-next-line prefer-const
     commands = this.application.commands
 
     for (const command of this.cmds) {
@@ -110,10 +111,10 @@ export class Soup extends Client {
   }
 
   private escape(str: string) {
-    return str.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')
+    return str.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&')
   }
 
-  public async sleep(n: number) {
+  public async sleep(n: number): Promise<void> {
     return new Promise<void>(resolve => {
       setTimeout(() => resolve(), n * 1000)
     })
@@ -139,7 +140,7 @@ export class Soup extends Client {
         soup: this,
         interaction,
         options,
-        player
+        player,
       })
     } catch (error) {
       this.logger.error(error)

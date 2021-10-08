@@ -1,5 +1,5 @@
 {
-  "name": "Soup",
+  "name": "soup",
   "version": "1.0.0",
   "description": "A fully featued music bot for Discord",
   "main": "dist/main.js",
@@ -7,8 +7,8 @@
   "author": "Dylan Ogle <delxhq0@gmail.com>",
   "scripts": {
     "start": "ts-node -T src/main.ts",
-    "gb": "barrelsby -d src -l below -D -q -S",
     "start:prod": "node dist/main.js",
+    "gb": "barrelsby -d src -l below -D -q -S",
     "build": "tsc --build"
   },
   "license": "MIT",

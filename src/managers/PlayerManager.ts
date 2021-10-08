@@ -2,7 +2,7 @@ import { Guild as GuildClass, TextChannel } from 'discord.js'
 import { Soup } from '../Soup'
 import { LoadType } from '../types/types'
 import { Player, TrackUtils } from 'erela.js'
-import { RichEmbed, Track } from '../util/helpers'
+import { Track } from '../util/helpers'
 
 export interface GuildTrack {
   id: string
@@ -16,11 +16,11 @@ export interface GuildTrack {
 
 export class PlayerManager {
 
-  public get id() {
+  public get id(): string {
     return this.guild.id
   }
 
-  public get player() {
+  public get player(): Player {
     return this.realPlayer
   }
 
@@ -51,7 +51,7 @@ export class PlayerManager {
     })
   }
 
-  public get currentTrack() {
+  public get currentTrack(): GuildTrack {
     if (this.track < 0 || !this.queue[this.track]) return null
 
     return this.queue[this.track]
@@ -63,26 +63,26 @@ export class PlayerManager {
   public queueChannel: TextChannel | null = null
   public loop: 'off' | 'queue' | 'track' = 'off'
   private realPlayer: Player | null = null
-  private track: number = -1
+  private track = -1
 
-  public async initPlayer(textChannelId: string, voiceChannelId: string) {
+  public async initPlayer(textChannelId: string, voiceChannelId: string): Promise<Player> {
     if (this.realPlayer) return this.realPlayer
 
     return this.player = this.soup.manager.create({
       guild: this.guild.id,
       voiceChannel: voiceChannelId,
       textChannel: textChannelId,
-      selfDeafen: true
+      selfDeafen: true,
     }).connect()
   }
 
-  public enqueue(track: GuildTrack) {
+  public enqueue(track: GuildTrack): number {
     const index = this.queue.push(track)
 
     return index
   }
 
-  public play(track: number) {
+  public play(track: number): number {
     if (!this.player) return
 
     this.track = track - 1
@@ -101,7 +101,7 @@ export class PlayerManager {
     })
   }
 
-  public skipSong() {
+  public skipSong(): GuildTrack {
     if (!this.realPlayer) return null
 
     const track = this.queue[this.track + 1] || null
@@ -111,7 +111,7 @@ export class PlayerManager {
     return track
   }
 
-  public clearQueue() {
+  public clearQueue(): void {
     if (!this.realPlayer) return
 
     this.queue = []
@@ -129,7 +129,7 @@ export class PlayerManager {
         case LoadType.SEARCH_RESULT:
           return resolve({
             tracks: [this.lavalinkToGuildTrack(res.tracks[0])],
-            playlist: null
+            playlist: null,
           })
         case LoadType.PLAYLIST_LOADED:
           return resolve({
@@ -147,20 +147,20 @@ export class PlayerManager {
     })
   }
 
-  public duration(ms: number) {
-    let hours = ms / (1000 * 60 * 60)
-    let absoluteHours = Math.floor(hours)
-    let h = absoluteHours > 9 ? absoluteHours : '0' + absoluteHours
+  public duration(ms: number): string {
+    const hours = ms / (1000 * 60 * 60)
+    const absoluteHours = Math.floor(hours)
+    const h = absoluteHours > 9 ? absoluteHours : '0' + absoluteHours
 
-    let minutes = (hours - absoluteHours) * 60
-    let absoluteMinutes = Math.floor(minutes)
-    let m = absoluteMinutes > 9 ? absoluteMinutes : '0' + absoluteMinutes
+    const minutes = (hours - absoluteHours) * 60
+    const absoluteMinutes = Math.floor(minutes)
+    const m = absoluteMinutes > 9 ? absoluteMinutes : '0' + absoluteMinutes
 
-    let seconds = (minutes - absoluteMinutes) * 60
-    let absoluteSeconds = Math.floor(seconds)
-    let s = absoluteSeconds > 9 ? absoluteSeconds : '0' + absoluteSeconds
+    const seconds = (minutes - absoluteMinutes) * 60
+    const absoluteSeconds = Math.floor(seconds)
+    const s = absoluteSeconds > 9 ? absoluteSeconds : '0' + absoluteSeconds
 
-    return h + ':' + m + ':' + s;
+    return h + ':' + m + ':' + s
   }
 
   private lavalinkToGuildTrack(llTrack: any): GuildTrack {
