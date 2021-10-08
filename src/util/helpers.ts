@@ -8,7 +8,7 @@ export function RichEmbed(
   desc?: string | null,
   fields: RichEmbedField[] = [],
   icon?: string | null,
-  color: ColorResolvable = 'GOLD',
+  color: ColorResolvable = 'WHITE',
 ) {
   let realTitle: string | null = title
   if (!desc) {
@@ -54,7 +54,7 @@ export function Track(embedTitle: string, track: GuildTrack) {
     .setFooter(`${track.duration}`)
     .setColor('#f2df88')
 
-  if (track.thumb) re.setThumbnail(track.thumb)
+  if (track.thumbnail) re.setThumbnail(track.thumbnail)
 
   return re
 }
