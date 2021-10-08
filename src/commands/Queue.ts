@@ -20,7 +20,7 @@ export const Queue = new (class extends Command {
 
     // if (player.player && player.player.playing && player.currentTrack) {
     //   interaction.reply({ embeds: [Track('Current Song', player.currentTrack)] })
-    }
+    // }
 
     // this.sendQueue(interaction, player)
   }
