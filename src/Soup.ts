@@ -1,4 +1,4 @@
-import { Client, ClientUser, Intents, ApplicationCommandManager, GuildApplicationCommandManager, Interaction } from 'discord.js'
+import { Client, ClientUser, Intents, ApplicationCommandManager, GuildApplicationCommandManager, Interaction, Guild } from 'discord.js'
 import { Command } from './Command'
 import { PlayerManager } from './managers/PlayerManager'
 import * as cmdList from './commands'
@@ -40,8 +40,8 @@ export class Soup extends Client {
       new Spotify({
         clientID: process.env.SPOTIFY_CLIENTID,
         clientSecret: process.env.SPOTIFY_CLIENTSECRET,
-      })
-    ]
+      }),
+    ],
   })
 
   constructor(private loginToken: string) {
@@ -54,6 +54,7 @@ export class Soup extends Client {
     })
 
     this.on('interactionCreate', interaction => this.onSlashCommand(interaction))
+    // this.on('guildCreate', guild => this.onGuildJoin(guild))
     this.on('raw', d => {
       // this.logger.debug(d)
       this.manager.updateVoiceState(d)
