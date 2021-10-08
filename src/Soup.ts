@@ -36,9 +36,7 @@ export class Soup extends Client {
 
       if (guild) guild.shard.send(payload)
     },
-    plugins: [
-      new Spotify(),
-    ],
+    plugins: [new Spotify({ convertUnresolved: true })],
   })
 
   constructor(private loginToken: string) {

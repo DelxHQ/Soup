@@ -27,7 +27,7 @@ export class PlayerManager {
   public set player(player: Player | null) {
     if (this.realPlayer) {
       this.realPlayer.stop()
-      // this.realPlayer.disconnect()
+      this.realPlayer.disconnect()
       this.realPlayer.destroy()
     }
 
