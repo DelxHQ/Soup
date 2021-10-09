@@ -8,6 +8,7 @@
   "scripts": {
     "start": "ts-node -T src/main.ts",
     "start:prod": "node dist/main.js",
+    "updateCommands": "ts-node -T scripts/updateCommands.ts",
     "gb": "barrelsby -d src -l below -D -q -S",
     "build": "tsc --build"
   },
@@ -15,8 +16,10 @@
   "private": false,
   "dependencies": {
     "@bwatton/logger": "^1.0.6",
+    "@discordjs/rest": "^0.1.0-canary.0",
     "better-erela.js-spotify": "^1.1.3",
     "bufferutil": "^4.0.4",
+    "discord-api-types": "^0.23.1",
     "discord.js": "^13.1.0",
     "erela.js": "^2.3.3",
     "node-fetch": "^2.0.0",

@@ -1,6 +1,6 @@
 {
   "env": {
-    "es2020": true,
+    "es2021": true,
     "node": true
   },
   "extends": [
@@ -8,7 +8,7 @@
     "plugin:@typescript-eslint/recommended"
   ],
   "parserOptions": {
-    "ecmaVersion": 2020,
+    "ecmaVersion": 2021,
     "parser": "@typescript-eslint/parser",
     "sourceType": "module",
     "project": "./tsconfig.json"

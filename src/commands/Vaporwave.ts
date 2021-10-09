@@ -3,9 +3,9 @@ import { Category, Command, IRun } from '../Command'
 
 export const Vaporwave = new (class extends Command {
 
-  public name = 'Vaporwave'
+  public name = 'vaporwave'
   public category = Category.Music
-  public description = 'Stops the current song and clears the queue.'
+  public description = 'Applies a vaporwave effect to the current track'
   public options = []
   public permissions = []
 

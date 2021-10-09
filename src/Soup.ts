@@ -4,7 +4,7 @@ import * as cmdList from './commands'
 import Logger from '@bwatton/logger'
 import { Manager, NodeOptions } from 'erela.js'
 import Spotify from 'better-erela.js-spotify'
-import { PlayerEventHandler } from './eventHandlers/PlayerEventHandler'
+import { PlayerHandler } from './eventHandlers/PlayerHandler'
 import { Error as ErrorEmbed } from './util'
 
 export class Soup extends Client {
@@ -82,7 +82,7 @@ export class Soup extends Client {
     this.manager.init(this.user.id)
     await this.loadCommands()
 
-    new PlayerEventHandler(this).init()
+    new PlayerHandler(this).init()
 
     if (Soup.DEV_MODE) {
       const devCommands = this.guilds.cache.get(process.env.DEV_GUILD).commands

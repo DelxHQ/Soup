@@ -2,9 +2,11 @@
   "extends": "@tsconfig/node16",
   "compilerOptions": {
     "strict": false,
-    "outDir": "dist"
+    "outDir": "dist",
+    "resolveJsonModule": true
   },
   "include": [
-    "src/**/*"
+    "src/**/*",
+    "scripts/**/*"
   ]
 }
