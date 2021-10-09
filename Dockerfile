@@ -1,6 +1,5 @@
 FROM ghcr.io/delxhq/node-gyp-images
 
-RUN mkdir /app
 COPY . /app
 
 WORKDIR /app
