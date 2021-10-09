@@ -7,7 +7,7 @@
   "author": "Dylan Ogle <delxhq0@gmail.com>",
   "scripts": {
     "start": "ts-node -T src/main.ts",
-    "start:prod": "node dist/main.js",
+    "start:prod": "node dist/src/main.js",
     "updateCommands": "ts-node -T scripts/updateCommands.ts",
     "gb": "barrelsby -d src -l below -D -q -S",
     "build": "tsc --build"
