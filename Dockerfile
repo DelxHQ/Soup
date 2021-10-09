@@ -1,4 +1,4 @@
-FROM ghcr.io/delxhq/node-gyp-images
+FROM node:16.10-alpine
 
 COPY . /app
 
