@@ -1,5 +1,5 @@
 import { Category, Command, IRun } from '../Command'
-import { RichEmbed } from '../util'
+import { RichEmbed, Error } from '../util'
 
 export const Shuffle = new (class extends Command {
 
@@ -12,6 +12,8 @@ export const Shuffle = new (class extends Command {
 
   public async run({ soup, interaction }: IRun) {
     const guildPlayer = soup.manager.players.get(interaction.guild.id)
+
+    if (!guildPlayer) return interaction.reply({ embeds: [Error('A player doesn\'t exist for this guild.')] })
 
     guildPlayer.queue.shuffle()
 

@@ -4,7 +4,6 @@ import { Player, Track, TrackExceptionEvent, UnresolvedTrack } from 'erela.js'
 import { Soup } from '../Soup'
 import { Error, Track as GuildTrack } from '../util'
 
-
 export class PlayerHandler {
 
   constructor(private soup: Soup) {}
@@ -23,6 +22,7 @@ export class PlayerHandler {
     this.soup.manager.on('trackStart', (player, track) => this.onTrackStart(player, track))
     this.soup.manager.on('trackEnd', (player, track) => this.onTrackEnd(player, track))
     this.soup.manager.on('trackError', (player, track, payload) => this.onTrackError(player, track, payload))
+    this.soup.manager.on('playerDestroy', (player) => this.onPlayerDestroy(player))
   }
 
   private async onTrackStart(player: Player, track: Track) {
@@ -47,5 +47,11 @@ export class PlayerHandler {
     textChannel.send({ embeds: [Error(`An error occured whilst trying to play \`${track.title}\` Skipping to next track.`)] })
 
     this.logger.error(payload.exception)
+  }
+
+  private async onPlayerDestroy(player: Player) {
+    const textChannel = this.soup.channels.cache.get(player.textChannel) as TextChannel
+
+    if (this.nowPlayingMessages.has(textChannel.id)) this.nowPlayingMessages.delete(textChannel.id)
   }
 }

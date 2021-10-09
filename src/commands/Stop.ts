@@ -1,4 +1,4 @@
-import { RichEmbed } from '../util/helpers'
+import { RichEmbed, Error } from '../util/helpers'
 import { Category, Command, IRun } from '../Command'
 
 export const Stop = new (class extends Command {
@@ -12,6 +12,8 @@ export const Stop = new (class extends Command {
 
   public async run({ soup, interaction }: IRun) {
     const guildPlayer = soup.manager.players.get(interaction.guild.id)
+
+    if (!guildPlayer) return interaction.reply({ embeds: [Error('A player doesn\'t exist for this guild.')] })
 
     guildPlayer.stop()
     guildPlayer.queue.clear()
