@@ -31,7 +31,7 @@ export function RichEmbed(
 }
 
 export function Error(msg: string): MessageEmbed {
-  return RichEmbed('Error ( ͒˃̩̩⌂˂̩̩ ͒)', msg)
+  return RichEmbed('Error', msg)
 }
 
 export function Image(src: string, title?: string, desc?: string): MessageEmbed {
@@ -54,7 +54,7 @@ export function Track(embedTitle: string, track: Track): MessageEmbed {
     .setFooter(duration(track.duration))
     .setColor('#f2df88')
 
-  if (track.thumbnail) re.setThumbnail(track.displayThumbnail('maxresdefault'))
+  if (track.thumbnail) re.setThumbnail(track.thumbnail)
 
   return re
 }

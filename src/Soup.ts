@@ -9,7 +9,7 @@ import { Error as ErrorEmbed } from './util'
 
 export class Soup extends Client {
 
-  public static DEV_MODE = true
+  public static DEV_MODE = false
 
   private logger: Logger = new Logger('Bot')
 
@@ -84,6 +84,18 @@ export class Soup extends Client {
 
     new PlayerEventHandler(this).init()
 
+    if (Soup.DEV_MODE) {
+      const devCommands = this.guilds.cache.get(process.env.DEV_GUILD).commands
+
+      for (const command of this.cmds) {
+        devCommands.create({
+          name: command.name,
+          description: command.description,
+          options: command.options,
+        })
+      }
+    }
+
     /*
     * TODO: This needs to become a script.
     */
@@ -91,14 +103,6 @@ export class Soup extends Client {
     // let commands: ApplicationCommandManager
 
     // commands = this.application.commands
-
-    // for (const command of this.cmds) {
-    //   commands.create({
-    //     name: command.name,
-    //     description: command.description,
-    //     options: command.options,
-    //   })
-    // }
   }
 
   private async loadCommands() {
@@ -130,7 +134,7 @@ export class Soup extends Client {
 
     try {
       if (cmd.voiceOnly && !(interaction.member as GuildMember).voice.channel) {
-        return interaction.reply({ embeds: [ErrorEmbed(`You need to be in a voice channel to run the \`${cmd.name}\` command.`)] })
+        return interaction.reply({ embeds: [ErrorEmbed(`You need to be in a voice channel to run the \`${cmd.name}\` command.`)], ephemeral: true })
       }
       cmd.run({
         soup: this,

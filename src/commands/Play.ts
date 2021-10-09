@@ -1,4 +1,4 @@
-import { Constants, GuildMember } from 'discord.js'
+import { Constants, GuildMember, MessageEmbed } from 'discord.js'
 import { Category, Command, IRun } from '../Command'
 import { SearchResult } from 'erela.js'
 import { RichEmbed, Track } from '../util'
@@ -49,7 +49,7 @@ export const Play = new (class extends Command {
     } else {
       if (player.state !== 'CONNECTED') player.connect()
       player.queue.add(res.tracks[0])
-      interaction.reply({ embeds: [Track('Added to queue', res.tracks[0])] })
+      interaction.reply({ embeds: [RichEmbed('Added to queue', `\`${res.tracks[0].title}\`.`)] })
       if (!player.playing && !player.paused && !player.queue.size) {
         player.play()
       } else {
