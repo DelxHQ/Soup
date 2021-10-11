@@ -1,7 +1,7 @@
 import { Constants, GuildMember, MessageEmbed } from 'discord.js'
 import { Category, Command, IRun } from '../Command'
 import { SearchResult } from 'erela.js'
-import { RichEmbed, Track } from '../util'
+import { RichEmbed } from '../util'
 
 export const Play = new (class extends Command {
 

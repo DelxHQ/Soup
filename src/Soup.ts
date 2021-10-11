@@ -87,7 +87,7 @@ export class Soup extends Client {
           name: command.name,
           description: command.description,
           options: command.options,
-        })
+        }).then(() => this.logger.info(`Created (/) command for ${command.name}`))
       }
     }
 

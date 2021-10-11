@@ -1,5 +1,5 @@
 import { ColorResolvable, MessageEmbed, MessageEmbed as RE } from 'discord.js'
-import { Track } from 'erela.js'
+import { Track, UnresolvedTrack } from 'erela.js'
 
 export type RichEmbedField = [string, (string | number), boolean?]
 
@@ -45,7 +45,7 @@ export function Image(src: string, title?: string, desc?: string): MessageEmbed 
   return e
 }
 
-export function Track(embedTitle: string, track: Track): MessageEmbed {
+export function Track(embedTitle: string, track: Track | UnresolvedTrack): MessageEmbed {
   const re = new RE()
     .setAuthor(embedTitle)
     .setTitle(track.title)
