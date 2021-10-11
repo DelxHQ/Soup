@@ -79,17 +79,27 @@ export class Soup extends Client {
 
     new PlayerHandler(this).init()
 
-    if (Soup.DEV_MODE) {
-      const devCommands = this.guilds.cache.get(process.env.DEV_GUILD).commands
+    const applicationCommands = this.application.commands
 
-      for (const command of this.cmds) {
-        devCommands.create({
-          name: command.name,
-          description: command.description,
-          options: command.options,
-        }).then(() => this.logger.info(`Created (/) command for ${command.name}`))
+    applicationCommands.fetch().then(commands => {
+      for (const command of commands) {
+        const cmd = command[1]
+        const localCommand = this.commands[cmd.name]
+
+        if (cmd.description !== localCommand.description) {
+          applicationCommands.edit(cmd.id, {
+            name: localCommand.name,
+            description: localCommand.description,
+          })
+        } else if (cmd.options !== localCommand.options) {
+          applicationCommands.edit(cmd.id, {
+            name: localCommand.name,
+            description: localCommand.description,
+            options: localCommand.options,
+          })
+        }
       }
-    }
+    })
 
     /*
     * TODO: This needs to become a script.
