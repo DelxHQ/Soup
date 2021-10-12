@@ -1,11 +1,15 @@
-import { Client, ClientUser, GuildMember, Intents, Interaction } from 'discord.js'
+import { Client, ClientUser, GuildChannel, GuildMember, Intents, Interaction, TextChannel } from 'discord.js'
 import { Command } from './Command'
 import * as cmdList from './commands'
 import Logger from '@bwatton/logger'
 import { Manager, NodeOptions } from 'erela.js'
 import Spotify from 'better-erela.js-spotify'
 import { PlayerHandler } from './eventHandlers/PlayerHandler'
-import { Error as ErrorEmbed } from './util'
+import { Error as ErrorEmbed, RichEmbed } from './util'
+
+interface IChannels {
+  logs: TextChannel,
+}
 
 export class Soup extends Client {
 
@@ -18,6 +22,8 @@ export class Soup extends Client {
   } = {}
 
   public cmds: Command[] = []
+
+  public soupChannels: IChannels
 
   public lavalinkNodes: NodeOptions[] = [{
     identifier: 'lavalink-eu-1',
@@ -72,6 +78,10 @@ export class Soup extends Client {
       throw new Error('Error logging in to Discord - `user` undefined')
     }
 
+    this.soupChannels = {
+      logs: await this.getChannel<TextChannel>(process.env.LOGS_CHANNEL),
+    }
+
     this.logger.info(`Logged in as ${this.client.username}`)
 
     this.manager.init(this.user.id)
@@ -100,14 +110,13 @@ export class Soup extends Client {
         }
       }
     })
-
-    /*
-    * TODO: This needs to become a script.
-    */
-
-    // let commands: ApplicationCommandManager
-
-    // commands = this.application.commands
+    this.soupChannels.logs.send({
+      embeds: [
+        RichEmbed('Soup has started up.', null, [
+          ['Guilds', `\`\`\`${this.guilds.cache.size}\`\`\``],
+        ]),
+      ],
+    })
   }
 
   private async loadCommands() {
@@ -150,5 +159,9 @@ export class Soup extends Client {
       this.logger.error(error)
       interaction.reply({ content: 'There was an error trying to run this command.', ephemeral: true })
     }
+  }
+
+  private async getChannel<T extends GuildChannel = GuildChannel>(id: string) {
+    return await this.channels.fetch(id) as T
   }
 }

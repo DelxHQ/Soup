@@ -1,8 +1,8 @@
 import Logger from '@bwatton/logger'
-import { Message, TextChannel } from 'discord.js'
+import { Guild, Message, TextChannel } from 'discord.js'
 import { Player, Track, TrackExceptionEvent, UnresolvedTrack } from 'erela.js'
 import { Soup } from '../Soup'
-import { Error, Track as GuildTrack } from '../util'
+import { Error, RichEmbed, Track as GuildTrack } from '../util'
 
 export class PlayerHandler {
 
@@ -43,10 +43,19 @@ export class PlayerHandler {
 
   private async onTrackError(player: Player, track: Track | UnresolvedTrack, payload: TrackExceptionEvent) {
     const textChannel = this.soup.channels.cache.get(player.textChannel) as TextChannel
+    const guild = this.soup.guilds.cache.get(player.guild)
 
     textChannel.send({ embeds: [Error(`An error occured whilst trying to play \`${track.title}\` Skipping to next track.`)] })
 
-    this.logger.error(payload.exception)
+    this.soup.soupChannels.logs.send({
+      embeds: [
+        RichEmbed('A Lavalink error has occured whilst trying to play a track.', '', [
+          ['Track', `\`\`\`${track.title} (${track.uri})\`\`\``],
+          ['', `\`\`\`${payload.error}\`\`\``],
+        ])
+          .setFooter(`GUILD ID: ${guild.id}`),
+      ],
+    })
   }
 
   private async onPlayerDestroy(player: Player) {
