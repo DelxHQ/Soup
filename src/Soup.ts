@@ -1,4 +1,4 @@
-import { Client, ClientUser, GuildChannel, GuildMember, Intents, Interaction, TextChannel } from 'discord.js'
+import { Client, ClientUser, Guild, GuildChannel, GuildMember, Intents, Interaction, TextChannel } from 'discord.js'
 import { Command } from './Command'
 import * as cmdList from './commands'
 import Logger from '@bwatton/logger'
@@ -57,6 +57,7 @@ export class Soup extends Client {
     })
 
     this.on('interactionCreate', interaction => this.onSlashCommand(interaction))
+    this.on('guildCreate', guild => this.onGuildJoin(guild))
     this.on('raw', d => this.manager.updateVoiceState(d))
 
     this.manager.on('nodeError', (node, error) => {
@@ -113,7 +114,7 @@ export class Soup extends Client {
     })
     this.soupChannels.logs.send({
       embeds: [
-        RichEmbed('Soup has started up.', null, [
+        RichEmbed('Soup has started up.', '', [
           ['Guilds', `\`\`\`${this.guilds.cache.size}\`\`\``],
         ]),
       ],
@@ -160,6 +161,18 @@ export class Soup extends Client {
       this.logger.error(error)
       interaction.reply({ content: 'There was an error trying to run this command.', ephemeral: true })
     }
+  }
+
+  private async onGuildJoin(guild: Guild) {
+    this.soupChannels.logs.send({
+      embeds: [
+        RichEmbed('Soup added to new guild', '', [
+          ['Name', `\`\`\`${guild.name}\`\`\``],
+          ['Members', `\`\`\`${guild.memberCount}\`\`\``],
+        ]).setFooter(`GUILD ID ${guild.id}`)
+          .setThumbnail(guild.iconURL({ dynamic: true })),
+      ],
+    })
   }
 
   private async getChannel<T extends GuildChannel = GuildChannel>(id: string) {
