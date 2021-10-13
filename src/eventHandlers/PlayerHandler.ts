@@ -6,7 +6,7 @@ import { Error, RichEmbed, Track as GuildTrack } from '../util'
 
 export class PlayerHandler {
 
-  constructor(private soup: Soup) {}
+  constructor(private soup: Soup) { }
 
   private logger: Logger = new Logger('PlayerHandler')
 
@@ -51,9 +51,8 @@ export class PlayerHandler {
       embeds: [
         RichEmbed('A Lavalink error has occured whilst trying to play a track.', '', [
           ['Track', `\`\`\`${track.title} (${track.uri})\`\`\``],
-          ['', `\`\`\`${payload.error}\`\`\``],
-        ])
-          .setFooter(`GUILD ID: ${guild.id}`),
+          ['Error', `\`\`\`${payload.error}\`\`\``],
+        ]).setFooter(`GUILD ID: ${guild.id}`),
       ],
     })
   }
