@@ -52,6 +52,7 @@ export class Soup extends Client {
       intents: [
         Intents.FLAGS.GUILDS,
         Intents.FLAGS.GUILD_VOICE_STATES,
+        Intents.FLAGS.GUILD_MESSAGE_REACTIONS,
       ],
     })
 
