@@ -2,7 +2,8 @@ import { BaseCommandInteraction, Message, MessageReaction, User } from 'discord.
 import { Player } from 'erela.js'
 
 import { Category, Command, IRun } from '../Command'
-import { Error, RichEmbed, Track } from '../util/helpers'
+import { duration, Error, RichEmbed } from '../util/helpers'
+import { progressbar } from '../util/progressBar'
 
 const PAGE_SIZE = 10
 
@@ -15,14 +16,23 @@ export const Queue = new (class extends Command {
   public permissions = []
   public voiceOnly = true
 
-
   public async run({ soup, interaction }: IRun) {
     const guildPlayer = soup.manager.players.get(interaction.guild.id)
 
     if (!guildPlayer.queue) return interaction.reply({ embeds: [Error('No tracks in queue')] })
 
-    interaction.reply({ embeds: [Track('Current Song', guildPlayer.queue.current)] })
+    const currentTrack = guildPlayer.queue.current
 
+    interaction.reply({ 
+      embeds: [
+        RichEmbed(currentTrack.title, currentTrack.author, [
+          ['\u200b', progressbar(currentTrack.duration, guildPlayer.position, 20, '▬', '🔘')],
+        ], currentTrack.thumbnail, '#f2df88')
+          .setAuthor('Current Song')
+          .setFooter(duration(currentTrack.duration))
+          .setURL(currentTrack.uri),
+      ], 
+    })
     this.sendQueue(interaction, guildPlayer)
   }
 

@@ -119,6 +119,9 @@ export class Soup extends Client {
         ]),
       ],
     })
+    setInterval(() => {
+      this.user.setActivity(`music in ${this.manager.players.size} guilds`, { type: 'LISTENING' })
+    }, 120 * 1000)
   }
 
   private async loadCommands() {
