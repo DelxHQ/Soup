@@ -58,14 +58,15 @@ export class Soup extends Client {
 
     this.on('interactionCreate', interaction => this.onSlashCommand(interaction))
     this.on('guildCreate', guild => this.onGuildJoin(guild))
+    this.on('guildDelete', guild => this.onGuildLeave(guild))
     this.on('raw', d => this.manager.updateVoiceState(d))
 
     this.manager.on('nodeError', (node, error) => {
-      this.logger.info(`Node "${node.options.identifier}" encountered an error: ${error.message}`)
+      this.logger.info(`Lavalink node "${node.options.identifier}" encountered an error: ${error.message}`)
     })
 
     this.manager.on('nodeConnect', node => {
-      this.logger.info(`Node "${node.options.identifier}" connected`)
+      this.logger.info(`Lavalink node "${node.options.identifier}" connected`)
     })
   }
 
@@ -84,9 +85,8 @@ export class Soup extends Client {
       logs: await this.getChannel<TextChannel>(process.env.LOGS_CHANNEL),
     }
 
-    this.logger.info(`Logged in as ${this.client.username}`)
-
     this.manager.init(this.user.id)
+
     await this.loadCommands()
 
     new PlayerHandler(this).init()
@@ -112,6 +112,9 @@ export class Soup extends Client {
         }
       }
     })
+
+    this.logger.info(`Logged in and ready as ${this.client.username}`)
+
     this.soupChannels.logs.send({
       embeds: [
         RichEmbed('Soup has started up.', '', [
@@ -119,8 +122,9 @@ export class Soup extends Client {
         ]),
       ],
     })
+
     setInterval(() => {
-      this.user.setActivity(`music in ${this.manager.players.size} guilds`, { type: 'LISTENING' })
+      this.user.setActivity(`music in ${this.manager.players.size} guilds`, { type: 'PLAYING' })
     }, 120 * 1000)
   }
 
@@ -172,10 +176,26 @@ export class Soup extends Client {
         RichEmbed('Soup added to new guild', '', [
           ['Name', `\`\`\`${guild.name}\`\`\``],
           ['Members', `\`\`\`${guild.memberCount}\`\`\``],
-        ]).setFooter(`GUILD ID ${guild.id}`)
+        ], '', 'BLURPLE')
+          .setFooter(`GUILD ID ${guild.id}`)
           .setThumbnail(guild.iconURL({ dynamic: true })),
       ],
     })
+    this.logger.info(`Added to a new guild. ${guild.name} (${guild.id})`)
+  }
+
+  private async onGuildLeave(guild: Guild) {
+    this.soupChannels.logs.send({
+      embeds: [
+        RichEmbed('Soup removed from guild', '', [
+          ['Name', `\`\`\`${guild.name}\`\`\``],
+          ['Members', `\`\`\`${guild.memberCount}\`\`\``],
+        ], '', 'RED')
+          .setFooter(`GUILD ID ${guild.id}`)
+          .setThumbnail(guild.iconURL({ dynamic: true })),
+      ],
+    })
+    this.logger.info(`Removed from a guild. ${guild.name} (${guild.id})`)
   }
 
   private async getChannel<T extends GuildChannel = GuildChannel>(id: string) {
