@@ -8,8 +8,6 @@ export class PlayerHandler {
 
   constructor(private soup: Soup) { }
 
-  private logger: Logger = new Logger('PlayerHandler')
-
   private nowPlayingMessages: Map<string, Message> = new Map()
 
   public async init(): Promise<void> {
@@ -22,6 +20,7 @@ export class PlayerHandler {
     this.soup.manager.on('trackStart', (player, track) => this.onTrackStart(player, track))
     this.soup.manager.on('trackEnd', (player, track) => this.onTrackEnd(player, track))
     this.soup.manager.on('trackError', (player, track, payload) => this.onTrackError(player, track, payload))
+    this.soup.manager.on('playerMove', (player, initChannel, newChannel) => this.onPlayerMove(player, initChannel, newChannel))
     this.soup.manager.on('playerDestroy', (player) => this.onPlayerDestroy(player))
   }
 
@@ -51,10 +50,16 @@ export class PlayerHandler {
       embeds: [
         RichEmbed('A Lavalink error has occured whilst trying to play a track.', '', [
           ['Track', `\`\`\`${track.title} (${track.uri})\`\`\``],
-          ['Error', `\`\`\`${payload.error}\`\`\``],
+          ['Error', `\`\`\`${payload.exception.message || payload.error}\`\`\``],
         ]).setFooter(`GUILD ID: ${guild.id}`),
       ],
     })
+  }
+
+  private async onPlayerMove(player: Player, initChannel: string, newChannel: string) {
+    if (!newChannel) return player.destroy() // Assume we've been disconnected from the voice channel
+
+    player.setVoiceChannel(newChannel)
   }
 
   private async onPlayerDestroy(player: Player) {
