@@ -10,7 +10,6 @@ const PAGE_SIZE = 10
 export const Queue = new (class extends Command {
 
   public name = 'queue'
-  public category = Category.Music
   public description = 'Display a list of songs in the queue.'
   public options = []
   public permissions = []

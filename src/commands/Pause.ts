@@ -4,7 +4,6 @@ import { RichEmbed, Error } from '../util'
 export const Pause = new (class extends Command {
 
   public name = 'pause'
-  public category = Category.Music
   public description = 'Pause/Resume the current playing track.'
   public options = []
   public permissions = []

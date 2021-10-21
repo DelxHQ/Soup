@@ -4,7 +4,6 @@ import { RichEmbed, Error } from '../util'
 export const Shuffle = new (class extends Command {
 
   public name = 'shuffle'
-  public category = Category.Music
   public description = 'Shuffle all the tracks in the queue'
   public options = []
   public permissions = []

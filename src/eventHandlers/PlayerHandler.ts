@@ -1,5 +1,4 @@
-import Logger from '@bwatton/logger'
-import { Guild, Message, TextChannel } from 'discord.js'
+import { Message, TextChannel } from 'discord.js'
 import { Player, Track, TrackExceptionEvent, UnresolvedTrack } from 'erela.js'
 import { Soup } from '../Soup'
 import { Error, RichEmbed, Track as GuildTrack } from '../util'

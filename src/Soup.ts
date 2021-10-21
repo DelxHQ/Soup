@@ -91,28 +91,6 @@ export class Soup extends Client {
 
     new PlayerHandler(this).init()
 
-    const applicationCommands = this.application.commands
-
-    applicationCommands.fetch().then(commands => {
-      for (const command of commands) {
-        const cmd = command[1]
-        const localCommand = this.commands[cmd.name]
-
-        if (cmd.description !== localCommand.description) {
-          applicationCommands.edit(cmd.id, {
-            name: localCommand.name,
-            description: localCommand.description,
-          })
-        } else if (cmd.options !== localCommand.options) {
-          applicationCommands.edit(cmd.id, {
-            name: localCommand.name,
-            description: localCommand.description,
-            options: localCommand.options,
-          })
-        }
-      }
-    })
-
     this.logger.info(`Logged in and ready as ${this.client.username}`)
 
     this.soupChannels.logs.send({

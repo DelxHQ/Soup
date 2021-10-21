@@ -19,7 +19,6 @@ export interface IRun {
 export abstract class Command {
 
   public abstract name: string
-  public abstract category: Category
   public abstract description: string
   public abstract options: ApplicationCommandOptionData[]
   public permissions: Permission[] = []

@@ -4,7 +4,6 @@ import { RichEmbed, Error } from '../util'
 export const Leave = new (class extends Command {
 
   public name = 'leave'
-  public category = Category.Music
   public description = 'Stops the current track, clears the queue and leaves the voice channel.'
   public options = []
   public permissions = []

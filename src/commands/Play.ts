@@ -6,7 +6,6 @@ import { RichEmbed } from '../util'
 export const Play = new (class extends Command {
 
   public name = 'play'
-  public category = Category.Music
   public description = 'Plays a specified song and adds it to the queue.'
   public options = [{
     name: 'query',

@@ -4,7 +4,6 @@ import { Error, RichEmbed } from '../util'
 export const Skip = new (class extends Command {
 
   public name = 'skip'
-  public category = Category.Music
   public description = 'Skips the current playing song.'
   public options = []
   public permissions = []
