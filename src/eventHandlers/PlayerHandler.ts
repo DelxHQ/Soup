@@ -36,7 +36,7 @@ export class PlayerHandler {
 
     const originalPlayingMessage = this.nowPlayingMessages.get(textChannel.id)
 
-    if (originalPlayingMessage) originalPlayingMessage.delete()
+    if (this.nowPlayingMessages.has(textChannel.id)) originalPlayingMessage.delete()
   }
 
   private async onTrackError(player: Player, track: Track | UnresolvedTrack, payload: TrackExceptionEvent) {
@@ -56,7 +56,13 @@ export class PlayerHandler {
   }
 
   private async onPlayerMove(player: Player, initChannel: string, newChannel: string) {
-    if (!newChannel) return player.destroy() // Assume we've been disconnected from the voice channel
+    const textChannel = this.soup.channels.cache.get(player.textChannel) as TextChannel
+
+    if (!newChannel) { // Assume we've been disconnected from the voice channel
+      if (this.nowPlayingMessages.has(textChannel.id)) this.nowPlayingMessages.delete(textChannel.id)
+
+      return player.destroy()
+    }
 
     player.setVoiceChannel(newChannel)
   }
