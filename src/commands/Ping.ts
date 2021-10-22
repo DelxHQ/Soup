@@ -1,4 +1,4 @@
-import { Category, Command, IRun } from '../Command'
+import { Command, IRun } from '../Command'
 
 export const Ping = new (class extends Command {
 

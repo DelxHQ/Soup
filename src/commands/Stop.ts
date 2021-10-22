@@ -1,5 +1,5 @@
 import { RichEmbed, Error } from '../util/helpers'
-import { Category, Command, IRun } from '../Command'
+import { Command, IRun } from '../Command'
 
 export const Stop = new (class extends Command {
 

@@ -1,4 +1,4 @@
-import { Category, Command, IRun } from '../Command'
+import { Command, IRun } from '../Command'
 import { RichEmbed, Error } from '../util'
 
 export const Leave = new (class extends Command {

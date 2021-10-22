@@ -2,14 +2,6 @@ import { Soup } from './Soup'
 import { Permission } from './util/Permissions'
 import { ApplicationCommandOptionData, BaseCommandInteraction, CommandInteractionOptionResolver } from 'discord.js'
 
-export enum Category {
-  Fun,
-  Music,
-  Utilities,
-  Moderation,
-  ImageManipulation,
-}
-
 export interface IRun {
   soup: Soup,
   interaction: BaseCommandInteraction,

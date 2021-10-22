@@ -1,5 +1,5 @@
 import { Constants, GuildMember, MessageEmbed } from 'discord.js'
-import { Category, Command, IRun } from '../Command'
+import { Command, IRun } from '../Command'
 import { SearchResult } from 'erela.js'
 import { RichEmbed } from '../util'
 

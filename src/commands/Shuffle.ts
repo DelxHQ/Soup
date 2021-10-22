@@ -1,4 +1,4 @@
-import { Category, Command, IRun } from '../Command'
+import { Command, IRun } from '../Command'
 import { RichEmbed, Error } from '../util'
 
 export const Shuffle = new (class extends Command {

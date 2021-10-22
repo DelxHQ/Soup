@@ -1,7 +1,7 @@
 import { BaseCommandInteraction, Message, MessageReaction, User } from 'discord.js'
 import { Player } from 'erela.js'
 
-import { Category, Command, IRun } from '../Command'
+import { Command, IRun } from '../Command'
 import { duration, Error, RichEmbed } from '../util/helpers'
 import { progressbar } from '../util/progressBar'
 

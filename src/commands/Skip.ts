@@ -1,4 +1,4 @@
-import { Category, Command, IRun } from '../Command'
+import { Command, IRun } from '../Command'
 import { Error, RichEmbed } from '../util'
 
 export const Skip = new (class extends Command {
