@@ -6,6 +6,7 @@ import { Manager, NodeOptions } from 'erela.js'
 import Spotify from 'better-erela.js-spotify'
 import { PlayerHandler } from './eventHandlers/PlayerHandler'
 import { Error as ErrorEmbed, RichEmbed } from './util'
+import { ServerlistManager } from './managers/ServerlistManager'
 
 interface IChannels {
   logs: TextChannel,
@@ -90,6 +91,7 @@ export class Soup extends Client {
     await this.loadCommands()
 
     new PlayerHandler(this).init()
+    const listManager = new ServerlistManager(this)
 
     this.logger.info(`Logged in and ready as ${this.client.username}`)
 
@@ -101,6 +103,7 @@ export class Soup extends Client {
       ],
     })
 
+    setInterval(() => listManager.sendServerCount(), 300 * 1000)
     setInterval(() => {
       this.user.setActivity(`music in ${this.manager.players.size} guilds`, { type: 'PLAYING' })
     }, 120 * 1000)

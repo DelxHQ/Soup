@@ -1,6 +1,5 @@
 import { Message, TextChannel } from 'discord.js'
 import { Player, Track, TrackExceptionEvent, UnresolvedTrack } from 'erela.js'
-import { Play } from '../commands'
 import { Soup } from '../Soup'
 import { Error, RichEmbed, Track as GuildTrack } from '../util'
 
