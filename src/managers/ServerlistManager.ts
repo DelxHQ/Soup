@@ -29,7 +29,7 @@ export class ServerlistManager {
       await fetch(list['top.gg'].uri, {
         method: 'post',
         body: JSON.stringify({
-          server_count: this.soup.guilds.cache.size,
+          'server_count': this.soup.guilds.cache.size,
         }),
         headers: { 'Authorization': list['top.gg'].auth },
       }).then(res => res.json())
