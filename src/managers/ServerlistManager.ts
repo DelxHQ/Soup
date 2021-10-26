@@ -1,5 +1,4 @@
 import Logger from '@bwatton/logger'
-import { GatewayVoiceStateUpdateDispatch } from 'discord-api-types'
 import fetch from 'node-fetch'
 import { Soup } from '../Soup'
 
@@ -26,7 +25,6 @@ export class ServerlistManager {
   constructor(private soup: Soup) { }
 
   public async sendServerCount(): Promise<void> {
-    this.logger.info('Sending server count to bot lists...')
     for (const list of this.lists) {
       await fetch(list['top.gg'].uri, {
         method: 'post',
@@ -34,8 +32,8 @@ export class ServerlistManager {
           server_count: this.soup.guilds.cache.size,
         }),
         headers: { 'Authorization': list['top.gg'].auth },
-      })
+      }).then(res => res.json())
+        .then(json => console.log(json))
     }
-    this.logger.info('Done!')
   }
 }

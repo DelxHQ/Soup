@@ -103,6 +103,8 @@ export class Soup extends Client {
       ],
     })
 
+    await listManager.sendServerCount()
+
     setInterval(() => listManager.sendServerCount(), 300 * 1000)
     setInterval(() => {
       this.user.setActivity(`music in ${this.manager.players.size} guilds`, { type: 'PLAYING' })
