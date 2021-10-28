@@ -60,6 +60,7 @@ export class Soup extends Client {
     this.on('interactionCreate', interaction => this.onSlashCommand(interaction))
     this.on('guildCreate', guild => this.onGuildJoin(guild))
     this.on('guildDelete', guild => this.onGuildLeave(guild))
+    this.on('voiceStateUpdate', (oldState, newState) => this.logger.debug(`OLDSTATE: ${oldState}, NEWSTATE: ${newState}`))
     this.on('raw', d => this.manager.updateVoiceState(d))
 
     this.manager.on('nodeError', (node, error) => {
@@ -91,6 +92,7 @@ export class Soup extends Client {
     await this.loadCommands()
 
     new PlayerHandler(this).init()
+    
     const listManager = new ServerlistManager(this)
 
     this.logger.info(`Logged in and ready as ${this.client.username}`)
