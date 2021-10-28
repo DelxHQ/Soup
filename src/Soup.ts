@@ -60,7 +60,9 @@ export class Soup extends Client {
     this.on('interactionCreate', interaction => this.onSlashCommand(interaction))
     this.on('guildCreate', guild => this.onGuildJoin(guild))
     this.on('guildDelete', guild => this.onGuildLeave(guild))
-    this.on('voiceStateUpdate', (oldState, newState) => this.logger.debug(`OLDSTATE: ${oldState}, NEWSTATE: ${newState}`))
+    this.on('voiceStateUpdate', (oldState, newState) => this.logger.debug(`OLDSTATE: ${oldState.toJSON()}, NEWSTATE: ${newState.toJSON()}`))
+    this.on('warn', message => this.logger.warn(message))
+    this.on('error', error => this.logger.error(error))
     this.on('raw', d => this.manager.updateVoiceState(d))
 
     this.manager.on('nodeError', (node, error) => {
