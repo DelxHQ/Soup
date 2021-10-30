@@ -186,9 +186,4 @@ export class Soup extends Client {
   private async getChannel<T extends GuildChannel = GuildChannel>(id: string) {
     return await this.channels.fetch(id) as T
   }
-
-  public async softRestart(): Promise<void> {
-    this.cmds = []
-    await this.init()
-  }
 }
