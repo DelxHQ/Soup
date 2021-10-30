@@ -189,7 +189,6 @@ export class Soup extends Client {
 
   public async softRestart(): Promise<void> {
     this.cmds = []
-    this.commands = {}
     await this.init()
   }
 }
