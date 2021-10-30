@@ -147,7 +147,7 @@ export class Soup extends Client {
       cmd.run({
         soup: this,
         interaction,
-        options,
+        options: options as any,
       })
     } catch (error) {
       this.logger.error(error)
