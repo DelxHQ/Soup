@@ -10,11 +10,9 @@ if (!process.env.LAVALINK_HOST) throw new Error('LAVALINK_HOST is not set in ENV
   soup.init()
 
   process.on('uncaughtException', async () => {
-    soup.cmds = []
-    soup.init()
+    soup.softRestart()
   })
     .on('unhandledRejection', async () => {
-      soup.cmds = []
-      soup.init()
+      soup.softRestart()
     })
 })()
