@@ -6,5 +6,15 @@ if (!process.env.SPOTIFY_CLIENTSECRET) throw new Error('SPOTIFY_CLIENTSECRET is 
 if (!process.env.LAVALINK_HOST) throw new Error('LAVALINK_HOST is not set in ENV')
 
 ;(async() => {
-  await new Soup(process.env.DISCORD_TOKEN).init()
+  const soup = new Soup(process.env.DISCORD_TOKEN)
+  soup.init()
+
+  process.on('uncaughtException', async () => {
+    soup.cmds = []
+    soup.init()
+  })
+    .on('unhandledRejection', async () => {
+      soup.cmds = []
+      soup.init()
+    })
 })()
