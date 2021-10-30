@@ -4,9 +4,9 @@ COPY . /app
 
 WORKDIR /app
 
-RUN yarn
-RUN yarn build
+RUN npm i
+RUN npm run build
 
 RUN rm -rf src
 
-CMD ["yarn", "start:prod"]
+CMD ["npm", "run", "start:prod"]
