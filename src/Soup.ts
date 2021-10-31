@@ -60,7 +60,6 @@ export class Soup extends Client {
     this.on('interactionCreate', interaction => this.onSlashCommand(interaction))
     this.on('guildCreate', guild => this.onGuildJoin(guild))
     this.on('guildDelete', guild => this.onGuildLeave(guild))
-    // this.on('voiceStateUpdate', (oldState, newState) => this.logger.debug(`OLDSTATE: ${oldState.toJSON()}, NEWSTATE: ${newState.toJSON()}`))
     this.on('warn', message => this.logger.warn(message))
     this.on('error', error => this.logger.error(error))
     this.on('raw', d => this.manager.updateVoiceState(d))
@@ -94,7 +93,7 @@ export class Soup extends Client {
     await this.loadCommands()
 
     new PlayerHandler(this).init()
-    
+
     const listManager = new ServerlistManager(this)
 
     this.logger.info(`Logged in and ready as ${this.client.username}`)
@@ -107,7 +106,7 @@ export class Soup extends Client {
       ],
     })
 
-    setInterval(async() => await listManager.sendServerCount(), 300 * 1000)
+    setInterval(async () => await listManager.sendServerCount(), 300 * 1000)
     setInterval(() => {
       this.user.setActivity(`music in ${this.manager.players.size} guilds`, { type: 'PLAYING' })
     }, 120 * 1000)
@@ -138,7 +137,6 @@ export class Soup extends Client {
     if (!interaction.isCommand()) return
 
     const cmd = this.commands[interaction.commandName]
-    const { options } = interaction
 
     try {
       if (cmd.voiceOnly && !(interaction.member as GuildMember).voice.channel) {
@@ -147,7 +145,7 @@ export class Soup extends Client {
       cmd.run({
         soup: this,
         interaction,
-        options: options as any,
+        options: interaction.options as any,
       })
     } catch (error) {
       this.logger.error(error)

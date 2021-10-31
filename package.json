@@ -6,7 +6,7 @@
   "repository": "https://github.com/DelxHQ/Soup",
   "author": "Dylan Ogle <delxhq0@gmail.com>",
   "scripts": {
-    "start": "ts-node -T src/main.ts",
+    "start": "ts-node -T -r dotenv src/main.ts",
     "start:prod": "node dist/main.js",
     "gb": "barrelsby -d src -l below -D -q -S",
     "build": "tsc --build"
@@ -18,6 +18,7 @@
     "better-erela.js-spotify": "^1.1.3",
     "bufferutil": "^4.0.4",
     "discord.js": "^13.1.0",
+    "dotenv": "^10.0.0",
     "erela.js": "^2.3.3",
     "node-fetch": "^2.6.5",
     "utf-8-validate": "^5.0.6",
