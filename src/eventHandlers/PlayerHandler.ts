@@ -1,4 +1,4 @@
-import { Message, TextChannel } from 'discord.js'
+import { TextChannel } from 'discord.js'
 import { Player, Track, TrackExceptionEvent, UnresolvedTrack } from 'erela.js'
 import { Soup } from '../Soup'
 import { Error, RichEmbed, Track as GuildTrack } from '../util'
@@ -7,7 +7,7 @@ export class PlayerHandler {
 
   constructor(private soup: Soup) { }
 
-  private nowPlayingMessages: Map<string, Message> = new Map()
+  private nowPlayingMessages: Map<string, string> = new Map()
 
   public static loopTrack: boolean
   public static loopQueue: boolean
@@ -31,13 +31,12 @@ export class PlayerHandler {
 
     const nowPlayingMessage = await textChannel.send({ embeds: [GuildTrack('Now Playing', track)] })
 
-    this.nowPlayingMessages.set(textChannel.id, nowPlayingMessage)
+    this.nowPlayingMessages.set(textChannel.id, nowPlayingMessage.id)
   }
 
   private async onTrackEnd(player: Player, track: Track) {
     const textChannel = this.soup.channels.cache.get(player.textChannel) as TextChannel
-
-    const originalPlayingMessage = this.nowPlayingMessages.get(textChannel.id)
+    const originalPlayingMessage = await textChannel.messages.fetch(this.nowPlayingMessages.get(textChannel.id))
 
     if (this.nowPlayingMessages.has(textChannel.id)) originalPlayingMessage.delete()
 
