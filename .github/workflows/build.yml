@@ -18,5 +18,5 @@ jobs:
 
     - name: Build the Soup Docker image
       run: |
-        docker build . --tag ghcr.io/delxhq/soup:${{ github.ref }}
-        docker push ghcr.io/delxhq/soup:${{ github.ref }}
+        docker build . --tag ghcr.io/delxhq/soup:${{ github.head_ref }}
+        docker push ghcr.io/delxhq/soup:${{ github.head_ref }}
