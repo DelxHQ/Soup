@@ -73,13 +73,6 @@ export class Soup extends Client {
   public async init(): Promise<void> {
     await this.login(this.loginToken)
 
-    this.on('interactionCreate', interaction => this.onSlashCommand(interaction))
-    this.on('guildCreate', guild => this.onGuildJoin(guild))
-    this.on('guildDelete', guild => this.onGuildLeave(guild))
-    this.on('warn', message => this.logger.warn(message))
-    this.on('error', error => this.logger.error(error))
-    this.on('raw', d => this.manager.updateVoiceState(d))
-
     if (!this.user) {
       throw new Error('Error logging in to Discord - `user` undefined')
     }
@@ -105,6 +98,13 @@ export class Soup extends Client {
         ]),
       ],
     })
+
+    this.on('interactionCreate', interaction => this.onSlashCommand(interaction))
+    this.on('guildCreate', guild => this.onGuildJoin(guild))
+    this.on('guildDelete', guild => this.onGuildLeave(guild))
+    this.on('warn', message => this.logger.warn(message))
+    this.on('error', error => this.logger.error(error))
+    this.on('raw', d => this.manager.updateVoiceState(d))
 
     setInterval(async () => await listManager.sendServerCount(), 300 * 1000)
     setInterval(() => {
