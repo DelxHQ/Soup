@@ -30,7 +30,7 @@ export class Soup extends Client {
     identifier: 'lavalink-eu-1',
     host: process.env.LAVALINK_HOST,
     password: 'youshallnotpass',
-    port: 2333,
+    port: process.env.LAVALINK_PORT || 2333,
   }]
 
   public manager = new Manager({
