@@ -28,7 +28,6 @@ export class PlayerHandler {
 
   private async onTrackStart(player: Player, track: Track) {
     const textChannel = this.soup.channels.cache.get(player.textChannel) as TextChannel
-
     const nowPlayingMessage = await textChannel.send({ embeds: [GuildTrack('Now Playing', track)] })
 
     this.nowPlayingMessages.set(textChannel.id, nowPlayingMessage.id)

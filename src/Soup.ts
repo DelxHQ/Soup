@@ -2,7 +2,8 @@ import { Client, ClientUser, Guild, GuildChannel, GuildMember, Intents, Interact
 import { Command } from './Command'
 import * as cmdList from './commands'
 import Logger from '@bwatton/logger'
-import { Manager, NodeOptions } from 'erela.js'
+import { Manager, NodeOptions, Player, PlayerOptions } from 'erela.js'
+import { Redis } from './Redis'
 import Spotify from 'better-erela.js-spotify'
 import { PlayerHandler } from './eventHandlers/PlayerHandler'
 import { Error as ErrorEmbed, RichEmbed } from './util'
@@ -17,6 +18,8 @@ export class Soup extends Client {
   public static DEV_MODE = false
 
   private logger: Logger = new Logger('Bot')
+
+  public redis: Redis = new Redis()
 
   public commands: {
     [k: string]: Command,

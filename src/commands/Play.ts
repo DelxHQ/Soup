@@ -25,6 +25,10 @@ export const Play = new (class extends Command {
       selfDeafen: true,
     })
 
+    await soup.redis.addPlayer(player)
+
+    // console.log(JSON.stringifysoup.redis.fetchPlayers())
+
     let res: SearchResult
 
     try {
