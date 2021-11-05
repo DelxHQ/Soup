@@ -2,7 +2,8 @@ import { Client, ClientUser, Guild, GuildChannel, GuildMember, Intents, Interact
 import { Command } from './Command'
 import * as cmdList from './commands'
 import Logger from '@bwatton/logger'
-import { Manager, NodeOptions } from 'erela.js'
+import { Manager, NodeOptions, Player, PlayerOptions } from 'erela.js'
+import { Redis } from './Redis'
 import Spotify from 'better-erela.js-spotify'
 import { PlayerHandler } from './eventHandlers/PlayerHandler'
 import { Error as ErrorEmbed, RichEmbed } from './util'
@@ -17,6 +18,8 @@ export class Soup extends Client {
   public static DEV_MODE = false
 
   private logger: Logger = new Logger('Bot')
+
+  public redis: Redis = new Redis()
 
   public commands: {
     [k: string]: Command,
@@ -56,13 +59,6 @@ export class Soup extends Client {
         Intents.FLAGS.GUILD_MESSAGE_REACTIONS,
       ],
     })
-
-    this.on('interactionCreate', interaction => this.onSlashCommand(interaction))
-    this.on('guildCreate', guild => this.onGuildJoin(guild))
-    this.on('guildDelete', guild => this.onGuildLeave(guild))
-    this.on('warn', message => this.logger.warn(message))
-    this.on('error', error => this.logger.error(error))
-    this.on('raw', d => this.manager.updateVoiceState(d))
 
     this.manager.on('nodeError', (node, error) => {
       this.logger.info(`Lavalink node "${node.options.identifier}" encountered an error: ${error.message}`)
@@ -105,6 +101,13 @@ export class Soup extends Client {
         ]),
       ],
     })
+
+    this.on('interactionCreate', interaction => this.onSlashCommand(interaction))
+    this.on('guildCreate', guild => this.onGuildJoin(guild))
+    this.on('guildDelete', guild => this.onGuildLeave(guild))
+    this.on('warn', message => this.logger.warn(message))
+    this.on('error', error => this.logger.error(error))
+    this.on('raw', d => this.manager.updateVoiceState(d))
 
     setInterval(async () => await listManager.sendServerCount(), 300 * 1000)
     setInterval(() => {
