@@ -138,11 +138,12 @@ export class Soup extends Client {
     const cmd = this.commands[interaction.commandName]
 
     if (!this.hasBasicPermissions(interaction.channel as TextChannel)) {
-      return interaction.user.send({ 
+      interaction.user.send({ 
         embeds: [
           ErrorEmbed(`I don't have permissions to function in the ${interaction.channel} channel.`),
         ],
       })
+      return
     }
 
     try {

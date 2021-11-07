@@ -59,7 +59,7 @@ export class PlayerHandler {
       embeds: [
         RichEmbed('A Lavalink error has occured whilst trying to play a track.', '', [
           ['Track', `\`\`\`${track.title} (${track.uri})\`\`\``],
-          ['Error', `\`\`\`${payload.exception || payload.error}\`\`\``],
+          ['Error', `\`\`\`${payload.exception}\`\`\``],
         ]).setFooter(`GUILD ID: ${guild.id}`),
       ],
     })
