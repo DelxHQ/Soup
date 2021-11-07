@@ -1,4 +1,4 @@
-import { Client, ClientUser, Guild, GuildChannel, GuildMember, Intents, Interaction, TextChannel } from 'discord.js'
+import { Client, ClientUser, Guild, GuildChannel, GuildMember, Intents, Interaction, Permissions, TextChannel } from 'discord.js'
 import { Command } from './Command'
 import * as cmdList from './commands'
 import Logger from '@bwatton/logger'
@@ -7,7 +7,6 @@ import Spotify from 'better-erela.js-spotify'
 import { PlayerHandler } from './eventHandlers/PlayerHandler'
 import { Error as ErrorEmbed, RichEmbed } from './util'
 import { ServerlistManager } from './managers/ServerlistManager'
-
 interface IChannels {
   logs: TextChannel,
 }
@@ -138,10 +137,18 @@ export class Soup extends Client {
 
     const cmd = this.commands[interaction.commandName]
 
+    if (!this.hasBasicPermissions(interaction.channel as TextChannel)) {
+      return interaction.user.send({ 
+        embeds: [
+          ErrorEmbed(`I don't have permissions to function in the ${interaction.channel} channel.`),
+        ],
+      })
+    }
+
     try {
-      if (cmd.voiceOnly && !(interaction.member as GuildMember).voice.channel) {
+      if (cmd.voiceOnly && !(interaction.member as GuildMember).voice.channel)
         return interaction.reply({ embeds: [ErrorEmbed(`You need to be in a voice channel to run the \`${cmd.name}\` command.`)], ephemeral: true })
-      }
+
       cmd.run({
         soup: this,
         interaction,
@@ -183,5 +190,24 @@ export class Soup extends Client {
 
   private async getChannel<T extends GuildChannel = GuildChannel>(id: string) {
     return await this.channels.fetch(id) as T
+  }
+
+  private hasBasicPermissions(channel: TextChannel) {
+    const selfPermissions = channel.permissionsFor(channel.guild.members.cache.find(m => m.id === this.user.id))
+
+    const permissionsNeeded = [
+      Permissions.FLAGS.SEND_MESSAGES,
+      Permissions.FLAGS.EMBED_LINKS,
+      Permissions.FLAGS.ADD_REACTIONS,
+      Permissions.FLAGS.USE_EXTERNAL_EMOJIS,
+      Permissions.FLAGS.USE_EXTERNAL_STICKERS,
+    ]
+
+    for (const permission of permissionsNeeded) {
+      if (!selfPermissions.has(permission)) {
+        return false
+      }
+    }
+    return true
   }
 }

@@ -31,7 +31,7 @@ export function RichEmbed(
 }
 
 export function Error(msg: string): MessageEmbed {
-  return RichEmbed('Error', msg)
+  return RichEmbed('Error', msg, [], '', 'RED')
 }
 
 export function Image(src: string, title?: string, desc?: string): MessageEmbed {
