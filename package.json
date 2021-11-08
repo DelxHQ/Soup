@@ -6,7 +6,7 @@
   "repository": "https://github.com/DelxHQ/Soup",
   "author": "Dylan Ogle <delxhq0@gmail.com>",
   "scripts": {
-    "start": "ts-node -T -r dotenv src/main.ts",
+    "start": "ts-node -T src/main.ts",
     "start:prod": "node dist/main.js",
     "gb": "barrelsby -d src -l below -D -q -S",
     "build": "tsc --build"

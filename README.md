@@ -10,3 +10,21 @@
 
 <h1 align="center">Warning</h1>
 <h3 align="center">Soup is in early development!</h3>
+
+## Running
+Define your env varibles. Then simply run `npm run start` or `yarn start` if using yarn.
+
+## Building
+`npm run build` or `yarn build` if using yarn.
+
+## Environment variables
+
+```
+DISCORD_TOKEN=
+LAVALINK_HOST=
+LAVALINK_PORT=
+LOGS_CHANNEL=
+SPOTIFY_CLIENTID=
+SPOTIFY_CLIENTSECRET=
+TOP_GG_TOKEN=
+```
