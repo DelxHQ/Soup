@@ -90,13 +90,17 @@ export class Soup extends Client {
 
     this.logger.info(`Logged in and ready as ${this.client.username}`)
 
-    this.soupChannels.logs.send({
-      embeds: [
-        RichEmbed('Soup has started up.', '', [
-          ['Guilds', `\`\`\`${this.guilds.cache.size}\`\`\``],
-        ]),
-      ],
-    })
+    if (process.env.LOGS_CHANNEL) {
+      this.soupChannels.logs.send({
+        embeds: [
+          RichEmbed('Soup has started up.', '', [
+            ['Guilds', `\`\`\`${this.guilds.cache.size}\`\`\``],
+          ]),
+        ],
+      })
+    } else {
+      this.logger.warn('No logging channel set. Skipping.')
+    }
 
     this.on('interactionCreate', interaction => this.onSlashCommand(interaction))
     this.on('guildCreate', guild => this.onGuildJoin(guild))
@@ -105,7 +109,12 @@ export class Soup extends Client {
     this.on('error', error => this.logger.error(error))
     this.on('raw', d => this.manager.updateVoiceState(d))
 
-    setInterval(async () => await listManager.sendServerCount(), 300 * 1000)
+    if (process.env.TOP_GG_TOKEN) {
+      setInterval(async () => await listManager.sendServerCount(), 300 * 1000)  
+    } else {
+      this.logger.warn('TOP.GG token not set. Will not send server count.')
+    }
+
     setInterval(() => {
       this.user.setActivity(`music in ${this.manager.players.size} guilds`, { type: 'PLAYING' })
     }, 120 * 1000)
@@ -162,6 +171,8 @@ export class Soup extends Client {
   }
 
   private async onGuildJoin(guild: Guild) {
+    if (!process.env.LOGS_CHANNEL) return this.logger.warn('No logging channel set. Skipping.')
+
     this.soupChannels.logs.send({
       embeds: [
         RichEmbed('Soup added to new guild', '', [
@@ -176,6 +187,8 @@ export class Soup extends Client {
   }
 
   private async onGuildLeave(guild: Guild) {
+    if (!process.env.LOGS_CHANNEL) return this.logger.warn('No logging channel set. Skipping.')
+
     this.soupChannels.logs.send({
       embeds: [
         RichEmbed('Soup removed from guild', '', [

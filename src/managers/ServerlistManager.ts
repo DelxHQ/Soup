@@ -2,6 +2,8 @@ import Logger from '@bwatton/logger'
 import fetch from 'node-fetch'
 import { Soup } from '../Soup'
 
+// TODO: Rewrite this. This is horrible. 
+
 export interface IList {
   'top.gg': IListOpts
 }

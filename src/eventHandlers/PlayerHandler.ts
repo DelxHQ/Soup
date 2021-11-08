@@ -36,9 +36,8 @@ export class PlayerHandler {
 
   private async onTrackEnd(player: Player, track: Track) {
     const textChannel = this.soup.channels.cache.get(player.textChannel) as TextChannel
-    const originalPlayingMessage = await textChannel.messages.fetch(this.nowPlayingMessages.get(textChannel.id))
-
-    if (this.nowPlayingMessages.has(textChannel.id)) originalPlayingMessage.delete()
+  
+    this.deleteNowPlayingMessage(textChannel)
 
     if (!player.queue) {
       PlayerHandler.loopTrack = false
@@ -63,13 +62,14 @@ export class PlayerHandler {
         ]).setFooter(`GUILD ID: ${guild.id}`),
       ],
     })
+    this.deleteNowPlayingMessage(textChannel)
   }
 
   private async onPlayerMove(player: Player, initChannel: string, newChannel: string) {
     const textChannel = this.soup.channels.cache.get(player.textChannel) as TextChannel
 
     if (!newChannel) { // Assume we've been disconnected from the voice channel
-      if (this.nowPlayingMessages.has(textChannel.id)) this.nowPlayingMessages.delete(textChannel.id)
+      this.deleteNowPlayingMessage(textChannel)
 
       return player.destroy()
     }
@@ -80,6 +80,17 @@ export class PlayerHandler {
   private async onPlayerDestroy(player: Player) {
     const textChannel = this.soup.channels.cache.get(player.textChannel) as TextChannel
 
-    if (this.nowPlayingMessages.has(textChannel.id)) this.nowPlayingMessages.delete(textChannel.id)
+    this.deleteNowPlayingMessage(textChannel)
+  }
+
+  private async deleteNowPlayingMessage(channel: TextChannel) {
+    const originalPlayingMessage = await channel.messages.fetch(this.nowPlayingMessages.get(channel.id))
+
+    if (this.nowPlayingMessages.has(channel.id)) {
+      this.nowPlayingMessages.delete(channel.id)
+      if (originalPlayingMessage) {
+        originalPlayingMessage.delete()
+      }
+    }
   }
 }

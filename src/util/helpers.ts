@@ -32,6 +32,7 @@ export function RichEmbed(
 
 export function Error(msg: string): MessageEmbed {
   return RichEmbed('Error', msg, [], '', 'RED')
+    .setFooter('If you believe this error is incorrect. Don\'t hesitate to ask for help in our support server. https://discord.gg/3pqz7tkHj9')
 }
 
 export function Image(src: string, title?: string, desc?: string): MessageEmbed {
