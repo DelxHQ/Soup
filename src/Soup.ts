@@ -144,7 +144,6 @@ export class Soup extends Client {
 
   private async onSlashCommand(interaction: Interaction) {
     if (!interaction.isCommand()) return
-    interaction.deferReply()
 
     const cmd = this.commands[interaction.commandName]
 
