@@ -7,6 +7,7 @@ import Spotify from 'better-erela.js-spotify'
 import { PlayerHandler } from './eventHandlers/PlayerHandler'
 import { Error as ErrorEmbed, RichEmbed } from './util'
 import { ServerlistManager } from './managers/ServerlistManager'
+
 interface IChannels {
   logs: TextChannel,
 }
@@ -143,6 +144,7 @@ export class Soup extends Client {
 
   private async onSlashCommand(interaction: Interaction) {
     if (!interaction.isCommand()) return
+    interaction.deferReply()
 
     const cmd = this.commands[interaction.commandName]
 
