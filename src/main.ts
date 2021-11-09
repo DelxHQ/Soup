@@ -12,4 +12,8 @@ if (!process.env.LAVALINK_HOST) throw new Error('LAVALINK_HOST is not set in ENV
 ;(async() => {
   const soup = new Soup(process.env.DISCORD_TOKEN)
   soup.init()
+
+  process.on('unhandledRejection', error => {
+    console.error('Unhandled promise rejection:', error)
+  })
 })()
