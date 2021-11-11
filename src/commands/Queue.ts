@@ -24,7 +24,7 @@ export const Queue = new (class extends Command {
 
     const currentTrack = guildPlayer.queue.current
 
-    interaction.reply({ 
+    interaction.reply({
       embeds: [
         RichEmbed(currentTrack.title, currentTrack.author, [
           ['\u200b', progressbar(currentTrack.duration, guildPlayer.position, 20, '▬', '🔘')],
@@ -32,7 +32,7 @@ export const Queue = new (class extends Command {
           .setAuthor('Current Song')
           .setFooter(duration(currentTrack.duration))
           .setURL(currentTrack.uri),
-      ], 
+      ],
     })
     this.sendQueue(interaction, guildPlayer)
   }

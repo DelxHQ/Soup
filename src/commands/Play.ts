@@ -46,7 +46,7 @@ export const Play = new (class extends Command {
       if (player.state !== 'CONNECTED') player.connect()
       player.queue.add(res.tracks)
       interaction.reply({  embeds: [RichEmbed('Queued playlist', `\`${res.playlist.name}\`. \`${res.tracks.length}\` tracks.`)] })
-  
+
       if (!player.playing && !player.paused && player.queue.totalSize === res.tracks.length) player.play()
     } else {
       if (player.state !== 'CONNECTED') player.connect()

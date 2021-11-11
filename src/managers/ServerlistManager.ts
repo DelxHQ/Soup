@@ -2,7 +2,7 @@ import Logger from '@bwatton/logger'
 import fetch from 'node-fetch'
 import { Soup } from '../Soup'
 
-// TODO: Rewrite this. This is horrible. 
+// TODO: Rewrite this. This is horrible.
 
 export interface IList {
   'top.gg': IListOpts
@@ -31,9 +31,9 @@ export class ServerlistManager {
       await fetch(list['top.gg'].uri, {
         method: 'post',
         body: JSON.stringify({ server_count: this.soup.guilds.cache.size }),
-        headers: { 
+        headers: {
           'Authorization': list['top.gg'].auth,
-          'Content-Type': 'application/json', 
+          'Content-Type': 'application/json',
         },
       })
     }
