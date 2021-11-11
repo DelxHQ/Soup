@@ -1,15 +1,16 @@
-import { Client, ClientUser, Guild, GuildChannel, GuildMember, Intents, Interaction, Permissions, TextChannel } from 'discord.js'
+import { Client, ClientUser, Guild, GuildChannel, GuildMember, Intents, Interaction, Message, Permissions, TextChannel } from 'discord.js'
 import { Command } from './Command'
 import * as cmdList from './commands'
 import Logger from '@bwatton/logger'
 import { Manager, NodeOptions } from 'erela.js'
 import Spotify from 'better-erela.js-spotify'
 import { PlayerHandler } from './eventHandlers/PlayerHandler'
-import { Error as ErrorEmbed, RichEmbed } from './util'
+import { codeBlock, Error as ErrorEmbed, RichEmbed, secondsToDhms } from './util'
 import { ServerlistManager } from './managers/ServerlistManager'
 
 interface IChannels {
   logs: TextChannel,
+  statistics: TextChannel,
 }
 
 export class Soup extends Client {
@@ -79,6 +80,7 @@ export class Soup extends Client {
 
     this.soupChannels = {
       logs: await this.getChannel<TextChannel>(process.env.LOGS_CHANNEL),
+      statistics: await this.getChannel<TextChannel>(process.env.STATISTICS_CHANNEL),
     }
 
     this.manager.init(this.user.id)
@@ -88,8 +90,6 @@ export class Soup extends Client {
     new PlayerHandler(this).init()
 
     const listManager = new ServerlistManager(this)
-
-    this.logger.info(`Logged in and ready as ${this.client.username}`)
 
     if (process.env.LOGS_CHANNEL) {
       this.soupChannels.logs.send({
@@ -111,14 +111,18 @@ export class Soup extends Client {
     this.on('raw', d => this.manager.updateVoiceState(d))
 
     if (process.env.TOP_GG_TOKEN) {
-      setInterval(async () => await listManager.sendServerCount(), 300 * 1000)  
+      setInterval(async () => await listManager.sendServerCount(), 300 * 1000)
     } else {
       this.logger.warn('TOP.GG token not set. Will not send server count.')
     }
 
+    this.doStatistics()
+
     setInterval(() => {
       this.user.setActivity(`music in ${this.manager.players.size} guilds`, { type: 'PLAYING' })
     }, 120 * 1000)
+
+    this.logger.info(`Logged in and ready as ${this.client.username}`)
   }
 
   private async loadCommands() {
@@ -144,15 +148,14 @@ export class Soup extends Client {
 
   private async onSlashCommand(interaction: Interaction) {
     if (!interaction.isCommand()) return
-    interaction.deferReply()
 
     const cmd = this.commands[interaction.commandName]
 
     if (!this.hasBasicPermissions(interaction.channel as TextChannel)) {
-      interaction.user.send({ 
+      interaction.reply({
         embeds: [
           ErrorEmbed(`I don't have permissions to function in the ${interaction.channel} channel.`),
-        ],
+        ], ephemeral: true
       })
       return
     }
@@ -226,4 +229,31 @@ export class Soup extends Client {
     }
     return true
   }
+
+  private async doStatistics() {
+    const messages = (await this.soupChannels.statistics.messages.fetch()).map(m => m)
+
+    for (const message of messages) {
+      message.delete()
+    }
+
+    const message = await this.soupChannels.statistics.send('`Awaiting statistics...`')
+    const memoryUsed = process.memoryUsage().heapUsed / 1024 / 1024
+
+    setInterval(() => {
+      message.edit({
+        embeds: [
+          RichEmbed('Statistics', '', [
+            ['Guilds', codeBlock(this.guilds.cache.size)],
+            ['Players', codeBlock(this.manager.nodes.first().connected ? this.manager.players.size : 'Node not connected.')],
+            ['Playing Players', codeBlock(this.manager.nodes.first().connected ? this.manager.nodes.first().stats.playingPlayers : 'Node not connected.')],
+            ['Total Lavalink Nodes', codeBlock(this.manager.nodes.size)],
+            ['Memory Usage', codeBlock(Math.round(memoryUsed * 100) / 100 + 'MB')],
+            ['Gateway Ping', codeBlock(this.ws.ping + 'ms')],
+            ['Uptime', codeBlock(secondsToDhms(this.uptime / 1000))],
+          ], null, 'YELLOW')
+        ], content: null })
+    }, 15 * 1000)
+  }
 }
+
