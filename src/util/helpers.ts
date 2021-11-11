@@ -56,7 +56,7 @@ export function Track(embedTitle: string, track: Track | UnresolvedTrack): Messa
     .setFooter(duration(track.duration))
     .setColor('#f2df88')
 
-  if (track.thumbnail) re.setThumbnail(track.thumbnail)
+  if (track.thumbnail) re.setThumbnail(track.displayThumbnail('mqdefault'))
 
   return re
 }

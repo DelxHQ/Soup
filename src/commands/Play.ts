@@ -1,7 +1,7 @@
 import { Constants, GuildMember } from 'discord.js'
 import { Command, IRun } from '../Command'
 import { SearchResult } from 'erela.js'
-import { RichEmbed } from '../util'
+import { codeBlock, duration, Error, RichEmbed } from '../util'
 
 export const Play = new (class extends Command {
 
@@ -34,10 +34,13 @@ export const Play = new (class extends Command {
         throw res.exception
       }
     } catch (err) {
-      //
+      interaction.reply({ embeds: [Error(`An error occured trying to play this track. ${codeBlock(JSON.stringify(err.message))}`)] })
     }
     if (res.loadType == 'NO_MATCHES') {
       if (!player.queue.current) player.destroy()
+
+      interaction.reply({ embeds: [Error('No results were found using your search query.')] })
+
 
     } else if (res.loadType == 'PLAYLIST_LOADED') {
       if (player.state !== 'CONNECTED') player.connect()
@@ -48,7 +51,7 @@ export const Play = new (class extends Command {
     } else {
       if (player.state !== 'CONNECTED') player.connect()
       player.queue.add(res.tracks[0])
-      interaction.reply({ embeds: [RichEmbed('Added to queue', `\`${res.tracks[0].title}\`.`)] })
+      interaction.reply({ embeds: [RichEmbed('Added to queue', `\`${res.tracks[0].title}\`. \`[${duration(res.tracks[0].duration)}]\``, [], res.tracks[0].thumbnail)] })
       if (!player.playing && !player.paused && !player.queue.size) {
         player.play()
       } else {
