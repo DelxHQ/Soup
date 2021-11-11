@@ -50,8 +50,9 @@ export const Play = new (class extends Command {
       if (!player.playing && !player.paused && player.queue.totalSize === res.tracks.length) player.play()
     } else {
       if (player.state !== 'CONNECTED') player.connect()
-      player.queue.add(res.tracks[0])
-      interaction.reply({ embeds: [RichEmbed('Added to queue', `\`${res.tracks[0].title}\`. \`[${duration(res.tracks[0].duration)}]\``, [], res.tracks[0].thumbnail)] })
+      const track = res.tracks[0]
+      player.queue.add(track)
+      interaction.reply({ embeds: [RichEmbed('Added to queue', `\`${track.title}\`. \`${track.isStream ? 'LIVE' : `[${duration(track.duration)}]`}\``)] })
       if (!player.playing && !player.paused && !player.queue.size) {
         player.play()
       } else {

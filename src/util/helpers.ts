@@ -53,7 +53,7 @@ export function Track(embedTitle: string, track: Track | UnresolvedTrack): Messa
     .setTitle(track.title)
     .setDescription(track.author)
     .setURL(track.uri)
-    .setFooter(duration(track.duration))
+    .setFooter(track.isStream ? 'LIVE' : duration(track.duration))
     .setColor('#f2df88')
 
   if (track.thumbnail) re.setThumbnail(track.displayThumbnail('mqdefault'))
