@@ -253,7 +253,7 @@ export class Soup extends Client {
             ['Uptime', codeBlock(secondsToDhms(this.uptime / 1000))],
           ], null, 'YELLOW')
         ], content: null })
-    }, 15 * 1000)
+    }, 25 * 1000)
   }
 }
 
