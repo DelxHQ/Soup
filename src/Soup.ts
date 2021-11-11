@@ -238,9 +238,9 @@ export class Soup extends Client {
     }
 
     const message = await this.soupChannels.statistics.send('`Awaiting statistics...`')
-    const memoryUsed = process.memoryUsage().heapUsed / 1024 / 1024
 
     setInterval(() => {
+      const memoryUsed = process.memoryUsage().heapUsed / 1024 / 1024
       message.edit({
         embeds: [
           RichEmbed('Statistics', '', [
