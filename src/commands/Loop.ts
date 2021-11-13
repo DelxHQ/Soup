@@ -1,6 +1,5 @@
 import { Constants } from 'discord.js'
 import { Command, IRun } from '../Command'
-import { PlayerHandler } from '../eventHandlers'
 import { Error, RichEmbed } from '../util'
 
 export const Loop = new (class extends Command {
@@ -28,11 +27,9 @@ export const Loop = new (class extends Command {
 
     if (options.get('type').value === 'track') {
       guildPlayer.setTrackRepeat(true)
-      PlayerHandler.loopTrack = true
       interaction.reply({ embeds: [RichEmbed('', 'Enabled loop for the current track.')] })
     } else if (options.get('type').value === 'queue') {
       guildPlayer.setQueueRepeat(true)
-      PlayerHandler.loopQueue = true
       interaction.reply({ embeds: [RichEmbed('', 'Enabled loop for the queue.')] })
     }
   }

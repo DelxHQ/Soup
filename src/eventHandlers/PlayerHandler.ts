@@ -9,9 +9,6 @@ export class PlayerHandler {
 
   private nowPlayingMessages: Map<string, string> = new Map()
 
-  public static loopTrack: boolean
-  public static loopQueue: boolean
-
   public async init(): Promise<void> {
     await Promise.all([
       this.initListeners(),
@@ -36,14 +33,12 @@ export class PlayerHandler {
 
   private async onTrackEnd(player: Player, track: Track) {
     const textChannel = this.soup.channels.cache.get(player.textChannel) as TextChannel
-  
+
     this.deleteNowPlayingMessage(textChannel)
 
-    if (!player.queue) {
-      PlayerHandler.loopTrack = false
-      PlayerHandler.loopQueue = false
-
+    if (!player.queue.length && player.trackRepeat) {
       player.setTrackRepeat(false)
+    } else if (!player.queue.length && player.queueRepeat) {
       player.setQueueRepeat(false)
     }
   }
