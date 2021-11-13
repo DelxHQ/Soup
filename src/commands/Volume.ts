@@ -19,10 +19,13 @@ export const Volume = new (class extends Command {
     const guildPlayer = soup.manager.players.get(interaction.guild.id)
 
     if (!guildPlayer) return interaction.reply({ embeds: [Error('A player doesn\'t exist for this guild.')] })
-    if (options.getNumber('percentage') > 500) return interaction.reply({ embeds: [Error('Maximum volume can only be 500%')] })
 
-    guildPlayer.setVolume(options.getNumber('percentage'))
+    const volume = options.getNumber('percentage')
 
-    interaction.reply({ embeds: [RichEmbed('', `Set volume to ${guildPlayer.volume}`)] })
+    if (volume > 500) return interaction.reply({ embeds: [Error('Maximum volume can only be 500%')] })
+
+    guildPlayer.setVolume(volume)
+
+    interaction.reply({ embeds: [RichEmbed('', `Set volume to ${guildPlayer.volume}%`)] })
   }
 })()
