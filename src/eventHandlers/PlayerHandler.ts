@@ -1,13 +1,17 @@
+import Logger from '@bwatton/logger'
 import { TextChannel } from 'discord.js'
-import { Player, Track, TrackExceptionEvent, UnresolvedTrack } from 'erela.js'
+import { Player, Track, TrackExceptionEvent, TrackStuckEvent, UnresolvedTrack, WebSocketClosedEvent } from 'erela.js'
 import { Soup } from '../Soup'
-import { Error, RichEmbed, Track as GuildTrack } from '../util'
+import { codeBlock, Error, RichEmbed, Track as GuildTrack } from '../util'
 
 export class PlayerHandler {
 
   constructor(private soup: Soup) { }
 
   private nowPlayingMessages: Map<string, string> = new Map()
+
+  private logger: Logger = new Logger('PlayerHandler')
+
 
   public async init(): Promise<void> {
     await Promise.all([
@@ -20,7 +24,16 @@ export class PlayerHandler {
     this.soup.manager.on('trackEnd', (player, track) => this.onTrackEnd(player, track))
     this.soup.manager.on('trackError', (player, track, payload) => this.onTrackError(player, track, payload))
     this.soup.manager.on('playerMove', (player, initChannel, newChannel) => this.onPlayerMove(player, initChannel, newChannel))
+    this.soup.manager.on('playerCreate', (player) => this.onPlayerCreate(player))
     this.soup.manager.on('playerDestroy', (player) => this.onPlayerDestroy(player))
+    this.soup.manager.on('socketClosed', (player, payload) => this.onSocketClosed(player, payload))
+    this.soup.manager.on('trackStuck', (player, track, payload) => this.onTrackStuck(player, track, payload))
+  }
+
+  private async onPlayerCreate(player: Player) {
+    const guild = this.soup.guilds.cache.get(player.guild)
+
+    this.logger.info(`Created player for ${guild.name} (${guild.id})`)
   }
 
   private async onTrackStart(player: Player, track: Track) {
@@ -45,9 +58,9 @@ export class PlayerHandler {
 
   private async onTrackError(player: Player, track: Track | UnresolvedTrack, payload: TrackExceptionEvent) {
     const textChannel = this.soup.channels.cache.get(player.textChannel) as TextChannel
-    const guild = this.soup.guilds.cache.get(player.guild)
+    const guild = textChannel.guild
 
-    textChannel.send({ embeds: [Error(`An error occured whilst trying to play \`${track.title}\` Skipping to next track.`)] })
+    textChannel.send({ embeds: [Error(`An error occured whilst trying to play \`${track.title}\`.`)] })
 
     this.soup.soupChannels.logs.send({
       embeds: [
@@ -57,6 +70,8 @@ export class PlayerHandler {
         ]).setFooter(`GUILD ID: ${guild.id}`),
       ],
     })
+    this.logger.error(`A Lavalink error has occured whilst trying to play a track. ${guild.name} (${guild.id}): ${payload.exception}`)
+
     this.deleteNowPlayingMessage(textChannel)
   }
 
@@ -76,6 +91,8 @@ export class PlayerHandler {
     const textChannel = this.soup.channels.cache.get(player.textChannel) as TextChannel
 
     this.deleteNowPlayingMessage(textChannel)
+
+    this.logger.info(`Destroyed player for ${textChannel.guild.name} (${textChannel.guild.name})`)
   }
 
   private async deleteNowPlayingMessage(channel: TextChannel) {
@@ -87,5 +104,31 @@ export class PlayerHandler {
         originalPlayingMessage.delete()
       }
     }
+  }
+
+  private async onSocketClosed(player: Player, payload: WebSocketClosedEvent) {
+    const guild = this.soup.guilds.cache.get(player.guild)
+
+    this.soup.soupChannels.logs.send({
+      embeds: [
+        RichEmbed('Socket closed.', '', [
+          ['Reason', codeBlock(payload.reason)],
+          ['Code', codeBlock(payload.code)],
+        ]).setFooter(`GUILD ID: ${guild.id}`),
+      ],
+    })
+   this.logger.error(`Socket closed. ${guild.name} (${guild.id}): ${payload.reason}`)
+  }
+
+  private async onTrackStuck(player: Player, track: Track, payload: TrackStuckEvent) {
+    const guild = this.soup.guilds.cache.get(player.guild)
+
+    this.soup.soupChannels.logs.send({
+      embeds: [
+        RichEmbed('A track has gotten stuck.', '', [])
+          .setFooter(`GUILD ID: ${guild.id}`),
+      ],
+    })
+   this.logger.error(`A track has gotten stuck. ${guild.name} (${guild.id})`)
   }
 }
