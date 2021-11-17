@@ -43,6 +43,7 @@ export class Soup extends Client {
       if (guild) guild.shard.send(payload)
     },
     plugins: [
+      //@ts-ignore
       new AppleMusic(),
       new Spotify({
         strategy: 'API',
