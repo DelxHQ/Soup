@@ -4,6 +4,7 @@ import * as cmdList from './commands'
 import Logger from '@bwatton/logger'
 import { Manager, NodeOptions } from 'erela.js'
 import Spotify from 'better-erela.js-spotify'
+import AppleMusic from 'erela.js-apple'
 import { PlayerHandler } from './eventHandlers/PlayerHandler'
 import { codeBlock, Error as ErrorEmbed, RichEmbed, secondsToDhms } from './util'
 import { ServerlistManager } from './managers/ServerlistManager'
@@ -42,6 +43,7 @@ export class Soup extends Client {
       if (guild) guild.shard.send(payload)
     },
     plugins: [
+      new AppleMusic(),
       new Spotify({
         strategy: 'API',
         clientId: process.env.SPOTIFY_CLIENTID,
