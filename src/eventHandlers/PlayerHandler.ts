@@ -1,6 +1,6 @@
 import Logger from '@bwatton/logger'
 import { TextChannel } from 'discord.js'
-import { Player, Track, TrackEndEvent, TrackExceptionEvent, TrackStuckEvent, UnresolvedTrack, WebSocketClosedEvent } from 'erela.js'
+import { Player, Track, TrackExceptionEvent, TrackStuckEvent, UnresolvedTrack, WebSocketClosedEvent } from 'erela.js'
 import { Soup } from '../Soup'
 import { codeBlock, Error, RichEmbed, Track as GuildTrack } from '../util'
 
@@ -22,7 +22,6 @@ export class PlayerHandler {
   private async initListeners() {
     this.soup.manager.on('trackStart', (player, track) => this.onTrackStart(player, track))
     this.soup.manager.on('trackEnd', (player, track) => this.onTrackEnd(player, track))
-    this.soup.manager.on('queueEnd', (player, track, payload) => this.onQueueEnd(player, track, payload))
     this.soup.manager.on('trackError', (player, track, payload) => this.onTrackError(player, track, payload))
     this.soup.manager.on('playerMove', (player, initChannel, newChannel) => this.onPlayerMove(player, initChannel, newChannel))
     this.soup.manager.on('playerCreate', (player) => this.onPlayerCreate(player))
