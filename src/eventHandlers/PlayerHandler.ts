@@ -1,6 +1,6 @@
 import Logger from '@bwatton/logger'
 import { TextChannel } from 'discord.js'
-import { Player, Track, TrackExceptionEvent, TrackStuckEvent, UnresolvedTrack, WebSocketClosedEvent } from 'erela.js'
+import { Player, Track, TrackEndEvent, TrackExceptionEvent, TrackStuckEvent, UnresolvedTrack, WebSocketClosedEvent } from 'erela.js'
 import { Soup } from '../Soup'
 import { codeBlock, Error, RichEmbed, Track as GuildTrack } from '../util'
 
@@ -22,6 +22,7 @@ export class PlayerHandler {
   private async initListeners() {
     this.soup.manager.on('trackStart', (player, track) => this.onTrackStart(player, track))
     this.soup.manager.on('trackEnd', (player, track) => this.onTrackEnd(player, track))
+    this.soup.manager.on('queueEnd', (player, track, payload) => this.onQueueEnd(player, track, payload))
     this.soup.manager.on('trackError', (player, track, payload) => this.onTrackError(player, track, payload))
     this.soup.manager.on('playerMove', (player, initChannel, newChannel) => this.onPlayerMove(player, initChannel, newChannel))
     this.soup.manager.on('playerCreate', (player) => this.onPlayerCreate(player))
@@ -109,6 +110,34 @@ export class PlayerHandler {
   private async onSocketClosed(player: Player, payload: WebSocketClosedEvent) {
     const guild = this.soup.guilds.cache.get(player.guild)
 
+    /*
+    * A VERY hacky fix until erelajs fix their shit.
+    */
+
+    if (payload.code === 4000) {
+      this.logger.error(`Payload code 4000 received. Recreating player for guild ID: ${player.guild} `)
+
+      player.destroy()
+
+      const sleep = ms => new Promise(resolve => setTimeout(resolve, ms))
+      await sleep(500)
+
+      const newPlayer = this.soup.manager.create({
+        guild: player.guild,
+        voiceChannel: player.options.voiceChannel,
+        textChannel: player.options.textChannel,
+        selfDeafen: true,
+      }).connect()
+
+      if (player.queue) {
+        //@ts-ignore
+        newPlayer.queue = player.queue
+        newPlayer.position = player.position
+      }
+      await newPlayer.play(newPlayer.queue.current)
+      newPlayer.seek(player.position)
+    }
+
     this.soup.soupChannels.logs.send({
       embeds: [
         RichEmbed('Socket closed.', '', [
@@ -117,7 +146,7 @@ export class PlayerHandler {
         ]).setFooter(`GUILD ID: ${guild.id}`),
       ],
     })
-   this.logger.error(`Socket closed. ${guild.name} (${guild.id}): ${payload.reason}`)
+    this.logger.error(`Socket closed. ${guild.name} (${guild.id}): ${payload.reason}`)
   }
 
   private async onTrackStuck(player: Player, track: Track, payload: TrackStuckEvent) {
@@ -129,6 +158,6 @@ export class PlayerHandler {
           .setFooter(`GUILD ID: ${guild.id}`),
       ],
     })
-   this.logger.error(`A track has gotten stuck. ${guild.name} (${guild.id})`)
+    this.logger.error(`A track has gotten stuck. ${guild.name} (${guild.id})`)
   }
 }
