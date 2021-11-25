@@ -109,32 +109,10 @@ export class PlayerHandler {
   private async onSocketClosed(player: Player, payload: WebSocketClosedEvent) {
     const guild = this.soup.guilds.cache.get(player.guild)
 
-    /*
-    * A VERY hacky fix until erelajs fix their shit.
-    */
-
     if (payload.code === 4000) {
       this.logger.error(`Payload code 4000 received. Recreating player for guild ID: ${player.guild} `)
 
-      player.destroy()
-
-      const sleep = ms => new Promise(resolve => setTimeout(resolve, ms))
-      await sleep(500)
-
-      const newPlayer = this.soup.manager.create({
-        guild: player.guild,
-        voiceChannel: player.options.voiceChannel,
-        textChannel: player.options.textChannel,
-        selfDeafen: true,
-      }).connect()
-
-      if (player.queue) {
-        //@ts-ignore
-        newPlayer.queue = player.queue
-        newPlayer.position = player.position
-      }
-      await newPlayer.play(newPlayer.queue.current)
-      newPlayer.seek(player.position)
+      this.recreatePlayer(player)
     }
 
     this.soup.soupChannels.logs.send({
@@ -158,5 +136,33 @@ export class PlayerHandler {
       ],
     })
     this.logger.error(`A track has gotten stuck. ${guild.name} (${guild.id})`)
+  }
+
+  /*
+  * A VERY hacky fix until erelajs fix their shit.
+  *
+  * Should only be used when the websocket dies during playing tracks.
+  */
+  private async recreatePlayer(oldPlayer: Player) {
+    oldPlayer.destroy()
+
+    const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
+    await sleep(500)
+
+    const newPlayer = this.soup.manager.create(
+      oldPlayer.options
+    ).connect()
+
+    if (oldPlayer.queue) {
+      //@ts-ignore
+      newPlayer.queue = oldPlayer.queue
+      newPlayer.position = oldPlayer.position
+    }
+
+    if (oldPlayer.queue.current) {
+      newPlayer.play(newPlayer.queue.current).then(() =>
+        newPlayer.seek(oldPlayer.position)
+      )
+    }
   }
 }
