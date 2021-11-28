@@ -90,9 +90,9 @@ export class Soup extends Client {
 
     await this.loadCommands()
 
-    new PlayerHandler(this).init()
+    new PlayerHandler(this)
 
-    const listManager = new ServerlistManager(this)
+    // const listManager = new ServerlistManager(this)
 
     if (process.env.LOGS_CHANNEL) {
       this.soupChannels.logs.send({

@@ -6,20 +6,11 @@ import { codeBlock, Error, RichEmbed, Track as GuildTrack } from '../util'
 
 export class PlayerHandler {
 
-  constructor(private soup: Soup) { }
-
   private nowPlayingMessages: Map<string, string> = new Map()
 
   private logger: Logger = new Logger('PlayerHandler')
 
-
-  public async init(): Promise<void> {
-    await Promise.all([
-      this.initListeners(),
-    ])
-  }
-
-  private async initListeners() {
+  constructor(private soup: Soup) {
     this.soup.manager.on('trackStart', (player, track) => this.onTrackStart(player, track))
     this.soup.manager.on('trackEnd', (player, track) => this.onTrackEnd(player, track))
     this.soup.manager.on('trackError', (player, track, payload) => this.onTrackError(player, track, payload))
