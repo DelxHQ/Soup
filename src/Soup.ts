@@ -1,4 +1,4 @@
-import { Client, ClientUser, Guild, GuildChannel, GuildMember, Intents, Interaction, Message, Permissions, TextChannel } from 'discord.js'
+import { Client, ClientUser, Guild, GuildChannel, GuildMember, Intents, Interaction, Permissions, TextChannel } from 'discord.js'
 import { Command } from './Command'
 import * as cmdList from './commands'
 import Logger from '@bwatton/logger'
@@ -164,8 +164,13 @@ export class Soup extends Client {
     }
 
     try {
-      if (cmd.voiceOnly && !(interaction.member as GuildMember).voice.channel)
+      if (cmd.voiceOnly && !(interaction.member as GuildMember).voice.channel) {
         return interaction.reply({ embeds: [ErrorEmbed(`You need to be in a voice channel to run the \`${cmd.name}\` command.`)], ephemeral: true })
+      } else if (this.manager.players.get(interaction.guild.id)) {
+        if (cmd.voiceOnly && (interaction.member as GuildMember).voice.channel.id != this.manager.players.get(interaction.guild.id).voiceChannel) {
+          return interaction.reply({ embeds: [ErrorEmbed(`You need to be in the same voice as the player to run the \`${cmd.name}\` command.`)], ephemeral: true })
+        }
+      }
 
       cmd.run({
         soup: this,
@@ -255,7 +260,8 @@ export class Soup extends Client {
             ['Gateway Ping', codeBlock(this.ws.ping + 'ms')],
             ['Uptime', codeBlock(secondsToDhms(this.uptime / 1000))],
           ], null, 'YELLOW')
-        ], content: null })
+        ], content: null
+      })
     }, 25 * 1000)
   }
 }
