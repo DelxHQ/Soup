@@ -22,6 +22,7 @@
     "erela.js": "^2.3.3",
     "erela.js-apple": "^1.2.2",
     "node-fetch": "^2.6.5",
+    "nosql": "^6.1.0",
     "utf-8-validate": "^5.0.6",
     "zlib-sync": "^0.1.7"
   },
