@@ -212,6 +212,13 @@ export class Soup extends Client {
           .setThumbnail(guild.iconURL({ dynamic: true })),
       ],
     })
+
+    const guildPlayer = this.manager.players.get(guild.id)
+
+    if (guildPlayer) {
+      guildPlayer.destroy()
+    }
+
     this.logger.info(`Removed from a guild. ${guild.name} (${guild.id})`)
   }
 
