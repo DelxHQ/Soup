@@ -100,11 +100,9 @@ export class PlayerHandler {
   private async onSocketClosed(player: Player, payload: WebSocketClosedEvent) {
     const guild = this.soup.guilds.cache.get(player.guild)
 
-    if (payload.code === 4000) {
-      this.logger.error(`Payload code 4000 received. Recreating player for guild ID: ${player.guild} `)
+    this.logger.error(`Socket closed. Recreating player for guild ID: ${player.guild} `)
 
-      this.recreatePlayer(player)
-    }
+    this.recreatePlayer(player)
 
     this.soup.soupChannels.logs.send({
       embeds: [
@@ -135,7 +133,7 @@ export class PlayerHandler {
   * Should only be used when the websocket dies during playing tracks.
   */
   private async recreatePlayer(oldPlayer: Player) {
-    oldPlayer.destroy()
+    oldPlayer.destroy(false)
 
     const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
     await sleep(500)
