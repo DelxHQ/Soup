@@ -19,7 +19,6 @@ export const Queue = new (class extends Command {
     const guildPlayer = soup.manager.players.get(interaction.guild.id)
 
     if (!guildPlayer) return interaction.reply({ embeds: [Error('A player doesn\'t exist for this guild.')] })
-
     if (!guildPlayer.queue) return interaction.reply({ embeds: [Error('No tracks in queue')] })
 
     const currentTrack = guildPlayer.queue.current

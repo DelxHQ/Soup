@@ -6,7 +6,7 @@ import { Manager, NodeOptions } from 'erela.js'
 import Spotify from 'better-erela.js-spotify'
 import AppleMusic from 'better-erela.js-apple'
 import { PlayerHandler } from './eventHandlers/PlayerHandler'
-import { codeBlock, Error as ErrorEmbed, RichEmbed, secondsToDhms } from './util'
+import { Error as ErrorEmbed, RichEmbed } from './util'
 import { ServerlistManager } from './managers/ServerlistManager'
 
 interface IChannels {
@@ -29,7 +29,6 @@ export class Soup extends Client {
   public soupChannels: IChannels
 
   public lavalinkNodes: NodeOptions[] = [{
-    identifier: 'lavalink-eu-1',
     host: process.env.LAVALINK_HOST,
     password: 'youshallnotpass',
     port: parseInt(process.env.LAVALINK_PORT, 10) || 2333,
