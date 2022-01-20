@@ -39,12 +39,6 @@ export class PlayerHandler {
     const textChannel = this.soup.channels.cache.get(player.textChannel) as TextChannel
 
     this.deleteNowPlayingMessage(textChannel)
-
-    if (!player.queue.length && player.trackRepeat) {
-      player.setTrackRepeat(false)
-    } else if (!player.queue.length && player.queueRepeat) {
-      player.setQueueRepeat(false)
-    }
   }
 
   private async onTrackError(player: Player, track: Track | UnresolvedTrack, payload: TrackExceptionEvent) {

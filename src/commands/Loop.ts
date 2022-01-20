@@ -14,6 +14,7 @@ export const Loop = new (class extends Command {
     choices: [
       { name: 'Queue', value: 'queue' },
       { name: 'Track', value: 'track' },
+      { name: 'Disabled', value: 'disabled' },
     ],
   }]
 
@@ -31,6 +32,12 @@ export const Loop = new (class extends Command {
     } else if (options.get('type').value === 'queue') {
       guildPlayer.setQueueRepeat(true)
       interaction.reply({ embeds: [RichEmbed('', 'Enabled loop for the queue.')] })
+    } else if (options.get('type').value === 'disabled') {
+      if (guildPlayer.trackRepeat || guildPlayer.queueRepeat) {
+        guildPlayer.setQueueRepeat(false)
+        guildPlayer.setTrackRepeat(false)
+        interaction.reply({ embeds: [RichEmbed('', 'Disabled queue/track loop.')] })
+      }
     }
   }
 })()
