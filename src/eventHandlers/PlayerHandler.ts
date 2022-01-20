@@ -1,5 +1,5 @@
 import Logger from '@bwatton/logger'
-import { TextChannel } from 'discord.js'
+import { TextChannel, VoiceChannel, VoiceState } from 'discord.js'
 import { Player, Track, TrackExceptionEvent, TrackStuckEvent, UnresolvedTrack, WebSocketClosedEvent } from 'erela.js'
 import { Soup } from '../Soup'
 import { codeBlock, Error, RichEmbed, Track as GuildTrack } from '../util'
@@ -14,11 +14,14 @@ export class PlayerHandler {
     this.soup.manager.on('trackStart', (player, track) => this.onTrackStart(player, track))
     this.soup.manager.on('trackEnd', (player, track) => this.onTrackEnd(player, track))
     this.soup.manager.on('trackError', (player, track, payload) => this.onTrackError(player, track, payload))
-    this.soup.manager.on('playerMove', (player, initChannel, newChannel) => this.onPlayerMove(player, initChannel, newChannel))
+    // this.soup.manager.on('playerMove', (player, initChannel, newChannel) => this.onPlayerMove(player, initChannel, newChannel))
     this.soup.manager.on('playerCreate', (player) => this.onPlayerCreate(player))
     this.soup.manager.on('playerDestroy', (player) => this.onPlayerDestroy(player))
     this.soup.manager.on('socketClosed', (player, payload) => this.onSocketClosed(player, payload))
     this.soup.manager.on('trackStuck', (player, track, payload) => this.onTrackStuck(player, track, payload))
+
+    soup.on('voiceStateUpdate', (oldState, newState) => this.handleVoiceState(oldState, newState))
+    soup.on('channelUpdate', (oldChannel: VoiceChannel, newChannel: VoiceChannel) => this.handleChannelUpdate(oldChannel, newChannel))
   }
 
   private async onPlayerCreate(player: Player) {
@@ -53,9 +56,9 @@ export class PlayerHandler {
           ['Track', codeBlock(`${track.title} (${track.uri})`)],
           ['Error', codeBlock(payload.error)],
         ])
-        .setAuthor(guild.name)
-        .setThumbnail(guild.iconURL({ dynamic: true }))
-        .setFooter(`GUILD ID: ${guild.id}`),
+          .setAuthor(guild.name)
+          .setThumbnail(guild.iconURL({ dynamic: true }))
+          .setFooter(`GUILD ID: ${guild.id}`),
       ],
     })
     this.logger.error(`A Lavalink error has occured whilst trying to play a track. ${guild.name} (${guild.id}): ${payload.exception}`)
@@ -107,9 +110,9 @@ export class PlayerHandler {
           ['Reason', codeBlock(payload.reason)],
           ['Code', codeBlock(payload.code)],
         ])
-        .setAuthor(guild.name)
-        .setThumbnail(guild.iconURL({ dynamic: true }))
-        .setFooter(`GUILD ID: ${guild.id}`),
+          .setAuthor(guild.name)
+          .setThumbnail(guild.iconURL({ dynamic: true }))
+          .setFooter(`GUILD ID: ${guild.id}`),
       ],
     })
     this.logger.error(`Socket closed. ${guild.name} (${guild.id}): ${payload.reason}`)
@@ -121,9 +124,9 @@ export class PlayerHandler {
     this.soup.soupChannels.logs.send({
       embeds: [
         RichEmbed('A track has gotten stuck.', '', [])
-        .setAuthor(guild.name)
-        .setThumbnail(guild.iconURL({ dynamic: true }))
-        .setFooter(`GUILD ID: ${guild.id}`),
+          .setAuthor(guild.name)
+          .setThumbnail(guild.iconURL({ dynamic: true }))
+          .setFooter(`GUILD ID: ${guild.id}`),
       ],
     })
     this.logger.error(`A track has gotten stuck. ${guild.name} (${guild.id})`)
@@ -155,5 +158,52 @@ export class PlayerHandler {
         newPlayer.seek(oldPlayer.position)
       )
     }
+  }
+
+  // Some hacky things that might break happening down here
+
+  private handleVoiceState(oldState: VoiceState, newState: VoiceState) {
+    const channel = oldState.channel
+
+    if (!channel) return
+
+    if (oldState.id === this.soup.user.id && newState.id === this.soup.user.id) {
+      if (!newState.channel) {
+        const player = this.soup.manager.players.get(oldState.guild.id)
+
+        if (player)
+          player.destroy()
+      }
+    }
+
+    if (newState.serverMute == true && oldState.serverMute == false && oldState.member.id == this.soup.user.id) {
+      const player = this.soup.manager.players.get(oldState.guild.id)
+      player.pause(true)
+      return
+    }
+
+    if (newState.serverMute == false && oldState.serverMute == true && oldState.member.id == this.soup.user.id) {
+      const player = this.soup.manager.players.get(oldState.guild.id)
+      player.pause(false)
+      return
+    }
+  }
+
+  private async handleChannelUpdate(oldChannel: VoiceChannel, newChannel: VoiceChannel) {
+    if (oldChannel.type === 'GUILD_VOICE' && newChannel.type === 'GUILD_VOICE') {
+      const player = this.soup.manager.players.get(newChannel.guild.id);
+
+      if (player) {
+          if (player.voiceChannel === newChannel.id) {
+              if (player.playing && !player.paused) {
+                  player.pause(true);
+                  const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
+                  await sleep(500)
+
+                  player.pause(false);
+              }
+          }
+      }
+  }
   }
 }
