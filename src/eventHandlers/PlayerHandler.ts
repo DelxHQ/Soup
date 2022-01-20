@@ -56,9 +56,12 @@ export class PlayerHandler {
     this.soup.soupChannels.logs.send({
       embeds: [
         RichEmbed('A Lavalink error has occured whilst trying to play a track.', '', [
-          ['Track', `\`\`\`${track.title} (${track.uri})\`\`\``],
-          ['Error', `\`\`\`${payload.exception}\`\`\``],
-        ]).setFooter(`GUILD ID: ${guild.id}`),
+          ['Track', codeBlock(`${track.title} (${track.uri})`)],
+          ['Error', codeBlock(payload.error)],
+        ])
+        .setAuthor(guild.name)
+        .setThumbnail(guild.iconURL({ dynamic: true }))
+        .setFooter(`GUILD ID: ${guild.id}`),
       ],
     })
     this.logger.error(`A Lavalink error has occured whilst trying to play a track. ${guild.name} (${guild.id}): ${payload.exception}`)
@@ -109,7 +112,10 @@ export class PlayerHandler {
         RichEmbed('Socket closed.', '', [
           ['Reason', codeBlock(payload.reason)],
           ['Code', codeBlock(payload.code)],
-        ]).setFooter(`GUILD ID: ${guild.id}`),
+        ])
+        .setAuthor(guild.name)
+        .setThumbnail(guild.iconURL({ dynamic: true }))
+        .setFooter(`GUILD ID: ${guild.id}`),
       ],
     })
     this.logger.error(`Socket closed. ${guild.name} (${guild.id}): ${payload.reason}`)
@@ -121,7 +127,9 @@ export class PlayerHandler {
     this.soup.soupChannels.logs.send({
       embeds: [
         RichEmbed('A track has gotten stuck.', '', [])
-          .setFooter(`GUILD ID: ${guild.id}`),
+        .setAuthor(guild.name)
+        .setThumbnail(guild.iconURL({ dynamic: true }))
+        .setFooter(`GUILD ID: ${guild.id}`),
       ],
     })
     this.logger.error(`A track has gotten stuck. ${guild.name} (${guild.id})`)
