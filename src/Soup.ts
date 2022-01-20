@@ -6,7 +6,7 @@ import { Manager, NodeOptions } from 'erela.js'
 import Spotify from 'better-erela.js-spotify'
 import AppleMusic from 'better-erela.js-apple'
 import { PlayerHandler } from './eventHandlers/PlayerHandler'
-import { Error as ErrorEmbed, RichEmbed } from './util'
+import { codeBlock, Error as ErrorEmbed, RichEmbed, secondsToDhms } from './util'
 import { ServerlistManager } from './managers/ServerlistManager'
 
 interface IChannels {
