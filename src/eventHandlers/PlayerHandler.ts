@@ -102,7 +102,7 @@ export class PlayerHandler {
 
     this.logger.error(`Socket closed. Recreating player for guild ID: ${player.guild} `)
 
-    this.recreatePlayer(player)
+    // this.recreatePlayer(player)
 
     this.soup.soupChannels.logs.send({
       embeds: [
