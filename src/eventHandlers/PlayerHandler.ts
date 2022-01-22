@@ -14,14 +14,13 @@ export class PlayerHandler {
     this.soup.manager.on('trackStart', (player, track) => this.onTrackStart(player, track))
     this.soup.manager.on('trackEnd', (player, track) => this.onTrackEnd(player, track))
     this.soup.manager.on('trackError', (player, track, payload) => this.onTrackError(player, track, payload))
-    // this.soup.manager.on('playerMove', (player, initChannel, newChannel) => this.onPlayerMove(player, initChannel, newChannel))
+    this.soup.manager.on('playerMove', (player, initChannel, newChannel) => this.onPlayerMove(player, initChannel, newChannel))
     this.soup.manager.on('playerCreate', (player) => this.onPlayerCreate(player))
     this.soup.manager.on('playerDestroy', (player) => this.onPlayerDestroy(player))
     this.soup.manager.on('socketClosed', (player, payload) => this.onSocketClosed(player, payload))
     this.soup.manager.on('trackStuck', (player, track, payload) => this.onTrackStuck(player, track, payload))
 
     soup.on('voiceStateUpdate', (oldState, newState) => this.handleVoiceState(oldState, newState))
-    soup.on('channelUpdate', (oldChannel: VoiceChannel, newChannel: VoiceChannel) => this.handleChannelUpdate(oldChannel, newChannel))
   }
 
   private async onPlayerCreate(player: Player) {
@@ -72,10 +71,13 @@ export class PlayerHandler {
     if (!newChannel) { // Assume we've been disconnected from the voice channel
       this.deleteNowPlayingMessage(textChannel)
 
-      return player.destroy()
-    }
+      player.destroy()
+    } else {
+      player.setVoiceChannel(newChannel)
 
-    player.setVoiceChannel(newChannel)
+      player.pause(true)
+      setTimeout(() => player.pause(false), 500)
+    }
   }
 
   private async onPlayerDestroy(player: Player) {
@@ -160,47 +162,19 @@ export class PlayerHandler {
     }
   }
 
-  // Some hacky things that might break happening down here
-
   private handleVoiceState(oldState: VoiceState, newState: VoiceState) {
     const channel = oldState.channel
+    const guildPlayer = this.soup.manager.players.get(oldState.guild.id)
 
     if (!channel) return
 
     if (oldState.id === this.soup.user.id && newState.id === this.soup.user.id) {
-      if (!newState.channel) {
-        const player = this.soup.manager.players.get(oldState.guild.id)
-        player.destroy()
+      if (newState.serverMute && !oldState.serverMute && oldState.member.id == this.soup.user.id) {
+        guildPlayer.pause(true)
       }
 
-      if (newState.serverMute == true && oldState.serverMute == false && oldState.member.id == this.soup.user.id) {
-        const player = this.soup.manager.players.get(oldState.guild.id)
-        player.pause(true)
-        return
-      }
-
-      if (newState.serverMute == false && oldState.serverMute == true && oldState.member.id == this.soup.user.id) {
-        const player = this.soup.manager.players.get(oldState.guild.id)
-        player.pause(false)
-        return
-      }
-    }
-  }
-
-  private async handleChannelUpdate(oldChannel: VoiceChannel, newChannel: VoiceChannel) {
-    if (oldChannel.type === 'GUILD_VOICE' && newChannel.type === 'GUILD_VOICE') {
-      const player = this.soup.manager.players.get(newChannel.guild.id);
-
-      if (player) {
-        if (player.voiceChannel === newChannel.id) {
-          if (player.playing && !player.paused) {
-            player.pause(true);
-            const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
-            await sleep(500)
-
-            player.pause(false);
-          }
-        }
+      if (!newState.serverMute && oldState.serverMute && oldState.member.id == this.soup.user.id) {
+        guildPlayer.pause(false)
       }
     }
   }

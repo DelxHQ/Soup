@@ -1,6 +1,6 @@
 import dotenv from 'dotenv'
 import { Soup } from './Soup'
-import { RichEmbed } from './util'
+import { codeBlock, RichEmbed } from './util'
 
 dotenv.config()
 
@@ -20,7 +20,7 @@ if (!process.env.LAVALINK_HOST) throw new Error('LAVALINK_HOST is not set in ENV
     soup.soupChannels.logs.send({
       embeds: [
         RichEmbed('Unhandled promise rejection.', '', [
-          ['Error', `\`\`\`${error}\`\`\``],
+          ['Error', codeBlock(error)],
         ]),
       ],
     })
