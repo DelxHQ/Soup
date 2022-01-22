@@ -20,7 +20,7 @@ export const Play = new (class extends Command {
 
     const permissions = guildMember.voice.channel.permissionsFor(soup.user)
 
-    if (!permissions.has('CONNECT') || permissions.has('SPEAK')) {
+    if (!permissions.has('CONNECT') || !permissions.has('SPEAK')) {
       return interaction.reply({
         embeds: [
           Error(`I don't have permissions to either connect or speak in ${guildMember.voice.channel}`),
