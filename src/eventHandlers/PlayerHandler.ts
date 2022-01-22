@@ -170,22 +170,20 @@ export class PlayerHandler {
     if (oldState.id === this.soup.user.id && newState.id === this.soup.user.id) {
       if (!newState.channel) {
         const player = this.soup.manager.players.get(oldState.guild.id)
-
-        if (player)
-          player.destroy()
+        player.destroy()
       }
-    }
 
-    if (newState.serverMute == true && oldState.serverMute == false && oldState.member.id == this.soup.user.id) {
-      const player = this.soup.manager.players.get(oldState.guild.id)
-      player.pause(true)
-      return
-    }
+      if (newState.serverMute == true && oldState.serverMute == false && oldState.member.id == this.soup.user.id) {
+        const player = this.soup.manager.players.get(oldState.guild.id)
+        player.pause(true)
+        return
+      }
 
-    if (newState.serverMute == false && oldState.serverMute == true && oldState.member.id == this.soup.user.id) {
-      const player = this.soup.manager.players.get(oldState.guild.id)
-      player.pause(false)
-      return
+      if (newState.serverMute == false && oldState.serverMute == true && oldState.member.id == this.soup.user.id) {
+        const player = this.soup.manager.players.get(oldState.guild.id)
+        player.pause(false)
+        return
+      }
     }
   }
 
@@ -194,16 +192,16 @@ export class PlayerHandler {
       const player = this.soup.manager.players.get(newChannel.guild.id);
 
       if (player) {
-          if (player.voiceChannel === newChannel.id) {
-              if (player.playing && !player.paused) {
-                  player.pause(true);
-                  const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
-                  await sleep(500)
+        if (player.voiceChannel === newChannel.id) {
+          if (player.playing && !player.paused) {
+            player.pause(true);
+            const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
+            await sleep(500)
 
-                  player.pause(false);
-              }
+            player.pause(false);
           }
+        }
       }
-  }
+    }
   }
 }

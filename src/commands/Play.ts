@@ -18,6 +18,16 @@ export const Play = new (class extends Command {
   public async run({ soup, interaction, options }: IRun) {
     const guildMember = interaction.member as GuildMember
 
+    const permissions = guildMember.voice.channel.permissionsFor(soup.user)
+
+    if (!permissions.has('CONNECT') || permissions.has('SPEAK')) {
+      return interaction.reply({
+        embeds: [
+          Error(`I don't have permissions to either connect or speak in ${guildMember.voice.channel}`),
+        ], ephemeral: true
+      })
+    }
+
     const player = soup.manager.create({
       guild: interaction.guild.id,
       voiceChannel: guildMember.voice.channel.id,
