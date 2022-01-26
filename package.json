@@ -22,7 +22,7 @@
     "dotenv": "^10.0.0",
     "erela.js": "github:MenuDocs/erela.js#build",
     "node-fetch": "^2.6.5",
-    "utf-8-validate": "^5.0.6",
+    "utf-8-validate": "^5.0.8",
     "zlib-sync": "^0.1.7"
   },
   "devDependencies": {
