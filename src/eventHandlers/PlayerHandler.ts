@@ -1,5 +1,5 @@
 import Logger from '@bwatton/logger'
-import { TextChannel, VoiceChannel, VoiceState } from 'discord.js'
+import { TextChannel, VoiceState } from 'discord.js'
 import { Player, Track, TrackExceptionEvent, TrackStuckEvent, UnresolvedTrack, WebSocketClosedEvent } from 'erela.js'
 import { Soup } from '../Soup'
 import { codeBlock, Error, RichEmbed, Track as GuildTrack } from '../util'
@@ -13,6 +13,7 @@ export class PlayerHandler {
   constructor(private soup: Soup) {
     this.soup.manager.on('trackStart', (player, track) => this.onTrackStart(player, track))
     this.soup.manager.on('trackEnd', (player, track) => this.onTrackEnd(player, track))
+    this.soup.manager.on('queueEnd', (player) => this.onQueueEnd(player))
     this.soup.manager.on('trackError', (player, track, payload) => this.onTrackError(player, track, payload))
     this.soup.manager.on('playerMove', (player, initChannel, newChannel) => this.onPlayerMove(player, initChannel, newChannel))
     this.soup.manager.on('playerCreate', (player) => this.onPlayerCreate(player))
@@ -38,6 +39,13 @@ export class PlayerHandler {
   }
 
   private async onTrackEnd(player: Player, track: Track) {
+    const textChannel = this.soup.channels.cache.get(player.textChannel) as TextChannel
+
+    this.deleteNowPlayingMessage(textChannel)
+  }
+
+  // Apparently the trackEnd event isn't fired whenever the last track in the queue ends
+  private async onQueueEnd(player: Player) {
     const textChannel = this.soup.channels.cache.get(player.textChannel) as TextChannel
 
     this.deleteNowPlayingMessage(textChannel)
@@ -93,9 +101,9 @@ export class PlayerHandler {
 
     if (this.nowPlayingMessages.has(channel.id)) {
       this.nowPlayingMessages.delete(channel.id)
-      if (originalPlayingMessage) {
+
+      if (originalPlayingMessage)
         originalPlayingMessage.delete()
-      }
     }
   }
 
@@ -104,7 +112,8 @@ export class PlayerHandler {
 
     this.logger.error(`Socket closed. Recreating player for guild ID: ${player.guild} `)
 
-    // this.recreatePlayer(player)
+    if (payload.code >= 4000)
+      this.recreatePlayer(player)
 
     this.soup.soupChannels.logs.send({
       embeds: [
@@ -169,13 +178,11 @@ export class PlayerHandler {
     if (!channel) return
 
     if (oldState.id === this.soup.user.id && newState.id === this.soup.user.id) {
-      if (newState.serverMute && !oldState.serverMute && oldState.member.id == this.soup.user.id) {
+      if (newState.serverMute && !oldState.serverMute && oldState.member.id == this.soup.user.id)
         guildPlayer.pause(true)
-      }
 
-      if (!newState.serverMute && oldState.serverMute && oldState.member.id == this.soup.user.id) {
+      if (!newState.serverMute && oldState.serverMute && oldState.member.id == this.soup.user.id)
         guildPlayer.pause(false)
-      }
     }
   }
 }
