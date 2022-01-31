@@ -149,7 +149,7 @@ export class PlayerHandler {
   * Should only be used when the websocket dies during playing tracks.
   */
   private async recreatePlayer(oldPlayer: Player) {
-    oldPlayer.destroy(false)
+    oldPlayer.destroy()
 
     const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
     await sleep(500)
