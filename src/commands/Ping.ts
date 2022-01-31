@@ -14,8 +14,8 @@ export const Ping = new (class extends Command {
       embeds: [
         RichEmbed(
           '', codeBlock(`Gateway: ${soup.ws.ping}ms\nRest: ${Math.round(m.createdTimestamp - interaction.createdTimestamp)}ms`),
-          [], null, 'RED'
-        )]
+          [], null, 'RED',
+        )],
     })
     m.delete()
   }
