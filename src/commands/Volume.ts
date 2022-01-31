@@ -10,7 +10,7 @@ export const Volume = new (class extends Command {
     name: 'percentage',
     description: 'Volume (%)',
     required: true,
-    type: Constants.ApplicationCommandOptionTypes.NUMBER
+    type: Constants.ApplicationCommandOptionTypes.NUMBER,
   }]
   public permissions = []
   public voiceOnly = true
