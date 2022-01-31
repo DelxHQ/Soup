@@ -1,4 +1,9 @@
-FROM ghcr.io/delxhq/node-gyp-images:latest
+FROM node:alpine
+
+RUN apk add --no-cache \
+    python3 \
+    make \
+    g++
 
 COPY . /app
 

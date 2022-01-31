@@ -155,10 +155,11 @@ export class PlayerHandler {
     await sleep(500)
 
     const newPlayer = this.soup.manager.create(
-      oldPlayer.options
+      oldPlayer.options,
     ).connect()
 
     if (oldPlayer.queue) {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       //@ts-ignore
       newPlayer.queue = oldPlayer.queue
       newPlayer.position = oldPlayer.position
@@ -166,7 +167,7 @@ export class PlayerHandler {
 
     if (oldPlayer.queue.current) {
       newPlayer.play(newPlayer.queue.current).then(() =>
-        newPlayer.seek(oldPlayer.position)
+        newPlayer.seek(oldPlayer.position),
       )
     }
   }

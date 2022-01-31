@@ -156,7 +156,7 @@ export class Soup extends Client {
       interaction.reply({
         embeds: [
           ErrorEmbed(`I don't have permissions to function in the ${interaction.channel} channel.`),
-        ], ephemeral: true
+        ], ephemeral: true,
       })
       return
     }
@@ -221,7 +221,7 @@ export class Soup extends Client {
   }
 
   private async getChannel<T extends GuildChannel = GuildChannel>(id: string) {
-    return await this.channels.fetch(id) as T
+    return await this.channels.fetch(id) as unknown as T
   }
 
   private hasBasicPermissions(channel: TextChannel) {
@@ -264,8 +264,8 @@ export class Soup extends Client {
             ['Memory Usage', codeBlock(Math.round(memoryUsed * 100) / 100 + 'MB')],
             ['Gateway Ping', codeBlock(this.ws.ping + 'ms')],
             ['Uptime', codeBlock(secondsToDhms(this.uptime / 1000))],
-          ], null, 'YELLOW')
-        ], content: null
+          ], null, 'YELLOW'),
+        ], content: null,
       })
     }, 25 * 1000)
   }
