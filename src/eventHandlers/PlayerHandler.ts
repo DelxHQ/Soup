@@ -94,6 +94,11 @@ export class PlayerHandler {
     this.deleteNowPlayingMessage(textChannel)
 
     this.logger.info(`Destroyed player for ${textChannel.guild.name} (${textChannel.guild.name})`)
+
+    const messages = (await textChannel.messages.fetch()).filter(
+      m => m.type === 'APPLICATION_COMMAND',
+    )
+    textChannel.bulkDelete(messages, true)
   }
 
   private async deleteNowPlayingMessage(channel: TextChannel) {
