@@ -44,9 +44,10 @@ export class Soup extends Client {
     plugins: [
       new AppleMusic(),
       new Spotify({
-        strategy: 'SCRAPE',
-        // clientId: process.env.SPOTIFY_CLIENTID,
-        // clientSecret: process.env.SPOTIFY_CLIENTSECRET,
+        strategy: 'API',
+        clientId: process.env.SPOTIFY_CLIENTID,
+        clientID: process.env.SPOTIFY_CLIENTID,
+        clientSecret: process.env.SPOTIFY_CLIENTSECRET,
       })],
   })
 
