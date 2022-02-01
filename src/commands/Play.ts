@@ -1,4 +1,4 @@
-import { Constants, GuildMember } from 'discord.js'
+import { ApplicationCommandOptionData, Constants, GuildMember } from 'discord.js'
 import { Command, IRun } from '../Command'
 import { SearchResult } from 'erela.js'
 import { codeBlock, duration, Error, RichEmbed } from '../util'
@@ -7,12 +7,13 @@ export const Play = new (class extends Command {
 
   public name = 'play'
   public description = 'Plays a specified song and adds it to the queue.'
-  public options = [{
+  public options: ApplicationCommandOptionData[] = [{
     name: 'query',
     description: 'A YouTube/Spotify query or link.',
     required: true,
     type: Constants.ApplicationCommandOptionTypes.STRING,
   }]
+
   public voiceOnly = true
 
   public async run({ soup, interaction, options }: IRun) {
@@ -23,7 +24,7 @@ export const Play = new (class extends Command {
       return interaction.reply({
         embeds: [
           Error(`I don't have permissions to either connect or speak in ${guildMember.voice.channel}`),
-        ], ephemeral: true
+        ], ephemeral: true,
       })
     }
 

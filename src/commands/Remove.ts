@@ -1,4 +1,4 @@
-import { Constants } from 'discord.js'
+import { ApplicationCommandOptionData, Constants } from 'discord.js'
 import { Command, IRun } from '../Command'
 import { Error, RichEmbed } from '../util'
 
@@ -6,7 +6,7 @@ export const Remove = new (class extends Command {
 
   public name = 'remove'
   public description = 'Remove a track from the queue.'
-  public options = [{
+  public options: ApplicationCommandOptionData[] = [{
     name: 'Track Number',
     description: 'Number of the track in the queue.',
     required: true,

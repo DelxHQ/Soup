@@ -1,12 +1,12 @@
 import { RichEmbed, Error } from '../util/helpers'
 import { Command, IRun } from '../Command'
-import { Constants } from 'discord.js'
+import { ApplicationCommandOptionData, Constants } from 'discord.js'
 
 export const Volume = new (class extends Command {
 
   public name = 'volume'
   public description = 'Changes the player volume.'
-  public options = [{
+  public options: ApplicationCommandOptionData[] = [{
     name: 'percentage',
     description: 'Volume (%)',
     required: true,

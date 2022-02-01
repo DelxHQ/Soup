@@ -1,4 +1,4 @@
-import { Constants } from 'discord.js'
+import { ApplicationCommandOptionData, Constants } from 'discord.js'
 import { Command, IRun } from '../Command'
 import { Error, RichEmbed } from '../util'
 
@@ -6,7 +6,7 @@ export const Loop = new (class extends Command {
 
   public name = 'loop'
   public description = 'Loop the current track or queue.'
-  public options = [{
+  public options: ApplicationCommandOptionData[] = [{
     name: 'type',
     description: 'Type of loop.',
     required: true,
