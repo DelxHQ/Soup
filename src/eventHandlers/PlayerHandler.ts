@@ -95,7 +95,7 @@ export class PlayerHandler {
 
     this.logger.info(`Destroyed player for ${textChannel.guild.name} (${textChannel.guild.name})`)
 
-    const messages = (await textChannel.messages.fetch()).filter(
+    const messages = (await textChannel.messages.fetch({ limit: 100 })).filter(
       m => m.type === 'APPLICATION_COMMAND',
     )
     textChannel.bulkDelete(messages, true)
