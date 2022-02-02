@@ -25,7 +25,7 @@ RUN apk add --no-cache \
 
 ENV NODE_ENV=production
 
-COPY --from=builder /app /app
+COPY --from=code-builder /app /app
 WORKDIR /app
 
 RUN npm ci
