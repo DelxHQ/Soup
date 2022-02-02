@@ -8,7 +8,4 @@ ENV NODE_ENV=production
 
 RUN npm i
 
-RUN ls
-RUN pwd
-
 CMD ["npm", "run", "start:prod"]
