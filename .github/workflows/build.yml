@@ -12,7 +12,7 @@ jobs:
       with:
         node-version: 17
     - name: Install packages
-      run: npm i
+      run: npm install --production
 
     - name: Build source
       run: tsc --build
