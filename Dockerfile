@@ -11,7 +11,7 @@ RUN apk add --no-cache \
 COPY . /app
 WORKDIR /app
 
-RUN npm i -g typescript
+RUN npm i -g typescript @tsconfig/node16
 
 RUN npm ci
 RUN npm run build
