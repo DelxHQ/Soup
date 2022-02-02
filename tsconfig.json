@@ -2,7 +2,9 @@
   "compilerOptions": {
     "strict": false,
     "outDir": "dist",
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "module": "commonjs",
+    "target": "es2021",
   },
   "include": [
     "src/**/*",

@@ -7,10 +7,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - name: install Node
+
+    - name: Install Node
       uses: actions/setup-node@v1
       with:
         node-version: 17
+
     - name: Install packages
       run: npm install --production
 
@@ -18,8 +20,7 @@ jobs:
       run: tsc --build
 
     - name: Delete Typescript
-      run: |
-       rm -rf src
+      run: rm -rf src
 
     - name: Login to GitHub Container Registry
       uses: docker/login-action@v1
