@@ -1,4 +1,4 @@
-name: build and publish
+name: publish
 on: [push]
 
 jobs:
@@ -16,7 +16,7 @@ jobs:
     - name: tsc
       uses: icrawl/action-tsc@v1
 
-    - name: build
+    - name: Build
       uses: iCrawl/action-tsc@v1
 
     -name: Delete build tools
