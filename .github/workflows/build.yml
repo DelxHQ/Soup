@@ -1,13 +1,28 @@
-name: publish
-
+name: build and publish
 on: [push]
 
 jobs:
-  publish-soup-image:
+  build-soup-image:
+    name: Build
     runs-on: ubuntu-latest
-
     steps:
     - uses: actions/checkout@v2
+    - name: install Node
+      uses: actions/setup-node@v1
+      with:
+        node-version: 12
+    - name: Install packages
+      run: npm i
+    - name: tsc
+      uses: icrawl/action-tsc@v1
+
+    - name: build
+      uses: iCrawl/action-tsc@v1
+
+    -name: Delete build tools
+    run: |
+      rm -rf node_modules
+      rm -rf src
 
     - name: Login to GitHub Container Registry
       uses: docker/login-action@v1
