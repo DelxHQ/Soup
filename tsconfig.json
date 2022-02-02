@@ -1,5 +1,4 @@
 {
-  "extends": "@tsconfig/node16",
   "compilerOptions": {
     "strict": false,
     "outDir": "dist",
@@ -7,6 +6,5 @@
   },
   "include": [
     "src/**/*",
-    "scripts/**/*"
   ]
 }
