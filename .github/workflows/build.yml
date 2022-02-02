@@ -21,7 +21,6 @@ jobs:
 
     - name: Delete build tools
       run: |
-       rm -rf node_modules
        rm -rf src
 
     - name: Login to GitHub Container Registry
