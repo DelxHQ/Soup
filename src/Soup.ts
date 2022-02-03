@@ -47,8 +47,9 @@ export class Soup extends Client {
       new Spotify({
         strategy: 'API',
         clientId: process.env.SPOTIFY_CLIENTID,
-        clientID: process.env.SPOTIFY_CLIENTID,
         clientSecret: process.env.SPOTIFY_CLIENTSECRET,
+        cacheTrack: true,
+        maxCacheLifeTime: 1.8e+6,
       })],
   })
 
