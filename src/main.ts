@@ -21,7 +21,8 @@ if (!process.env.LAVALINK_HOST) throw new Error('LAVALINK_HOST is not set in ENV
       embeds: [
         RichEmbed('Unhandled promise rejection.', '', [
           ['Error', codeBlock(error)],
-        ]),
+        ])
+          .setColor('RED'),
       ],
     })
   })

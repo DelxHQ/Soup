@@ -32,6 +32,7 @@ export class Soup extends Client {
     host: process.env.LAVALINK_HOST,
     password: 'youshallnotpass',
     port: parseInt(process.env.LAVALINK_PORT, 10) || 2333,
+    retryAmount: Number.MAX_VALUE,
   }]
 
   public manager = new Manager({

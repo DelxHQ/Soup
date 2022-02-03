@@ -1,4 +1,4 @@
-import { ApplicationCommandOptionData, Constants, GuildMember } from 'discord.js'
+import { ApplicationCommandOptionData, Constants, GuildMember, Permissions } from 'discord.js'
 import { Command, IRun } from '../Command'
 import { SearchResult } from 'erela.js'
 import { codeBlock, duration, Error, RichEmbed } from '../util'
@@ -20,7 +20,7 @@ export const Play = new (class extends Command {
     const guildMember = interaction.member as GuildMember
     const permissions = guildMember.voice.channel.permissionsFor(soup.user)
 
-    if (!permissions.has('CONNECT') || !permissions.has('SPEAK')) {
+    if (!permissions.has(Permissions.FLAGS.CONNECT) || !permissions.has(Permissions.FLAGS.SPEAK)) {
       return interaction.reply({
         embeds: [
           Error(`I don't have permissions to either connect or speak in ${guildMember.voice.channel}`),

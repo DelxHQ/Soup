@@ -55,7 +55,9 @@ export class PlayerHandler {
     const textChannel = this.soup.channels.cache.get(player.textChannel) as TextChannel
     const guild = textChannel.guild
 
-    textChannel.send({ embeds: [Error(`An error occured whilst trying to play \`${track.title}\`.`)] })
+    textChannel.send({ embeds: [RichEmbed('', `An error occured whilst trying to play \`${track.title}\`.`, [
+      ['', `\`${payload.error}\``],
+    ])]})
 
     this.soup.soupChannels.logs.send({
       embeds: [
@@ -94,13 +96,18 @@ export class PlayerHandler {
     this.deleteNowPlayingMessage(textChannel)
 
     const messages = (await textChannel.messages.fetch({ limit: 100 })).filter(
-      m => m.type === 'APPLICATION_COMMAND',
+      m => m.type === 'APPLICATION_COMMAND' && m.author == this.soup.user,
     )
+    if (!messages) return
+
     textChannel.bulkDelete(messages, true)
+
+    if (!textChannel.guild) return
 
     textChannel.send({embeds: [
       RichEmbed('Thank you for using Soup!', 'Please consider voting for Soup if it did well over at [TOP.GG](https://top.gg/bot/893245033208217621/vote)! This will help boost Soups popularity.', [])
-        .setURL('https://top.gg/bot/893245033208217621/vote'),
+        .setURL('https://top.gg/bot/893245033208217621/vote')
+        .setThumbnail(this.soup.user.avatarURL({ dynamic: true })),
     ]}).then(m => setTimeout(() => m.delete(), 10 * 1000))
 
     this.logger.info(`Destroyed player for ${textChannel.guild.name} (${textChannel.guild.name})`)
