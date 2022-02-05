@@ -48,8 +48,7 @@ export class Soup extends Client {
         strategy: 'API',
         clientId: process.env.SPOTIFY_CLIENTID,
         clientSecret: process.env.SPOTIFY_CLIENTSECRET,
-        cacheTrack: true,
-        maxCacheLifeTime: 1.8e+6,
+        convertUnresolved: false,
       })],
   })
 
