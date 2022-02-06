@@ -122,7 +122,7 @@ export class Soup extends Client {
     this.doStatistics()
 
     setInterval(() => {
-      this.user.setActivity(`music in ${this.manager.players.size} guilds`, { type: 'PLAYING' })
+      this.user.setActivity(`music in ${this.manager.nodes.first().stats.players} guilds`, { type: 'PLAYING' })
     }, 120 * 1000)
 
     this.logger.info(`Logged in and ready as ${this.client.username}`)
