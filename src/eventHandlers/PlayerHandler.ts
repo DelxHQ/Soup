@@ -96,7 +96,7 @@ export class PlayerHandler {
     this.deleteNowPlayingMessage(textChannel)
 
     const messages = (await textChannel.messages.fetch({ limit: 100 })).filter(
-      m => m.type === 'APPLICATION_COMMAND' && m.author == this.soup.user,
+      m => m.type === 'APPLICATION_COMMAND',
     )
     if (!messages) return
 
@@ -127,10 +127,11 @@ export class PlayerHandler {
   private async onSocketClosed(player: Player, payload: WebSocketClosedEvent) {
     const guild = this.soup.guilds.cache.get(player.guild)
 
-    this.logger.error(`Socket closed. Recreating player for guild ID: ${player.guild} `)
+    if (payload.code == 4000) {
+      this.logger.error(`Socket closed. Recreating player for guild ID: ${player.guild} `)
 
-    if (payload.code >= 4000)
       this.recreatePlayer(player)
+    }
 
     this.soup.soupChannels.logs.send({
       embeds: [
