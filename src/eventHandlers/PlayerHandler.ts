@@ -21,7 +21,7 @@ export class PlayerHandler {
     this.soup.manager.on('socketClosed', (player, payload) => this.onSocketClosed(player, payload))
     this.soup.manager.on('trackStuck', (player, track, payload) => this.onTrackStuck(player, track, payload))
 
-    soup.on('voiceStateUpdate', (oldState, newState) => this.handleVoiceState(oldState, newState))
+    // soup.on('voiceStateUpdate', (oldState, newState) => this.handleVoiceState(oldState, newState))
   }
 
   private async onPlayerCreate(player: Player) {
@@ -197,18 +197,18 @@ export class PlayerHandler {
     }
   }
 
-  private handleVoiceState(oldState: VoiceState, newState: VoiceState) {
-    const channel = oldState.channel
-    const guildPlayer = this.soup.manager.players.get(oldState.guild.id)
+  // private handleVoiceState(oldState: VoiceState, newState: VoiceState) {
+  //   const channel = oldState.channel
+  //   const guildPlayer = this.soup.manager.players.get(oldState.guild.id)
 
-    if (!channel) guildPlayer.destroy()
+  //   if (!channel) guildPlayer.destroy()
 
-    if (oldState.id === this.soup.user.id && newState.id === this.soup.user.id) {
-      if (newState.serverMute && !oldState.serverMute && oldState.member.id == this.soup.user.id)
-        guildPlayer.pause(true)
+  //   if (oldState.id === this.soup.user.id && newState.id === this.soup.user.id) {
+  //     if (newState.serverMute && !oldState.serverMute && oldState.member.id == this.soup.user.id)
+  //       guildPlayer.pause(true)
 
-      if (!newState.serverMute && oldState.serverMute && oldState.member.id == this.soup.user.id)
-        guildPlayer.pause(false)
-    }
-  }
+  //     if (!newState.serverMute && oldState.serverMute && oldState.member.id == this.soup.user.id)
+  //       guildPlayer.pause(false)
+  //   }
+  // }
 }
