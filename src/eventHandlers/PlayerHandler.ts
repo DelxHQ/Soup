@@ -127,10 +127,14 @@ export class PlayerHandler {
   private async onSocketClosed(player: Player, payload: WebSocketClosedEvent) {
     const guild = this.soup.guilds.cache.get(player.guild)
 
-    if (payload.code == 4000) {
-      this.logger.error(`Socket closed. Recreating player for guild ID: ${player.guild} `)
-
-      this.recreatePlayer(player)
+    switch(payload.code) {
+      case 4014:
+        player.destroy()
+        break
+      case 4000:
+        this.logger.error(`Socket closed. Recreating player for guild ID: ${player.guild} `)
+        this.recreatePlayer(player)
+        break
     }
 
     this.soup.soupChannels.logs.send({
