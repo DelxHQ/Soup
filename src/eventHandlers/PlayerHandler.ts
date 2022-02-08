@@ -201,7 +201,7 @@ export class PlayerHandler {
     const channel = oldState.channel
     const guildPlayer = this.soup.manager.players.get(oldState.guild.id)
 
-    if (!channel) return
+    if (!channel) guildPlayer.destroy()
 
     if (oldState.id === this.soup.user.id && newState.id === this.soup.user.id) {
       if (newState.serverMute && !oldState.serverMute && oldState.member.id == this.soup.user.id)
