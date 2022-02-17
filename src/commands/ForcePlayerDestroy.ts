@@ -15,7 +15,7 @@ export const ForcePlayerDestroy = new (class extends Command {
   public permissions = []
 
   public async run({ soup, interaction, options }: IRun) {
-    const guildPlayer = soup.manager.players.get(options.getString('guildId'))
+    const guildPlayer = soup.manager.players.get(options.getString('guildid'))
 
     if (!guildPlayer) return interaction.reply({ embeds: [Error('A player doesn\'t exist for this guild.')] })
 
