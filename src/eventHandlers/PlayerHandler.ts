@@ -1,5 +1,5 @@
 import Logger from '@bwatton/logger'
-import { TextChannel, VoiceState } from 'discord.js'
+import { TextChannel } from 'discord.js'
 import { Player, Track, TrackExceptionEvent, TrackStuckEvent, UnresolvedTrack, WebSocketClosedEvent } from 'erela.js'
 import { Soup } from '../Soup'
 import { codeBlock, Error, RichEmbed, Track as GuildTrack } from '../util'
@@ -56,7 +56,7 @@ export class PlayerHandler {
     const guild = textChannel.guild
 
     textChannel.send({ embeds: [RichEmbed('', `An error occured whilst trying to play \`${track.title}\`.`, [
-      ['', `\`${payload.error}\``],
+      ['Error', `\`${payload.error}\``],
     ])]})
 
     this.soup.soupChannels.logs.send({

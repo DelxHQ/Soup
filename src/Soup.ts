@@ -37,6 +37,7 @@ export class Soup extends Client {
 
   public manager = new Manager({
     nodes: this.lavalinkNodes,
+    defaultSearchPlatform: 'youtube music',
     send: (id, payload) => { // what is this?
       const guild = this.guilds.cache.get(id)
 
