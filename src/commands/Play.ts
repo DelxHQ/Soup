@@ -23,10 +23,10 @@ export const Play = new (class extends Command {
     const permissions = guildMember.voice.channel.permissionsFor(soup.user)
 
     if (!permissions.has(Permissions.FLAGS.CONNECT) || !permissions.has(Permissions.FLAGS.SPEAK)) {
-      return interaction.reply({
+      return interaction.editReply({
         embeds: [
           Error(`I don't have permissions to either connect or speak in ${guildMember.voice.channel}`),
-        ], ephemeral: true,
+        ],
       })
     }
 
@@ -46,25 +46,25 @@ export const Play = new (class extends Command {
         throw res.exception
       }
     } catch (err) {
-      interaction.reply({ embeds: [Error(`An error occured trying to play this track. ${codeBlock(JSON.stringify(err.message))}`)] })
+      interaction.editReply({ embeds: [Error(`An error occured trying to play this track. ${codeBlock(JSON.stringify(err.message))}`)] })
     }
     if (res.loadType == 'NO_MATCHES') {
       if (!player.queue.current) player.destroy()
 
-      interaction.reply({ embeds: [Error('No results were found using your search query.')] })
+      interaction.editReply({ embeds: [Error('No results were found using your search query.')] })
 
 
     } else if (res.loadType == 'PLAYLIST_LOADED') {
       if (player.state !== 'CONNECTED') player.connect()
       player.queue.add(res.tracks)
-      interaction.reply({  embeds: [RichEmbed('Queued playlist', `\`${res.playlist.name}\`. \`${res.tracks.length}\` tracks.`)] })
+      interaction.editReply({  embeds: [RichEmbed('Queued playlist', `\`${res.playlist.name}\`. \`${res.tracks.length}\` tracks.`)] })
 
       if (!player.playing && !player.paused && player.queue.totalSize === res.tracks.length) player.play()
     } else {
       if (player.state !== 'CONNECTED') player.connect()
       const track = res.tracks[0]
       player.queue.add(track)
-      interaction.reply({ embeds: [RichEmbed('Added to queue', `\`${track.title}\`. \`${track.isStream ? 'LIVE' : `[${duration(track.duration)}]`}\``)] })
+      interaction.editReply({ embeds: [RichEmbed('Added to queue', `\`${track.title}\`. \`${track.isStream ? 'LIVE' : `[${duration(track.duration)}]`}\``)] })
       if (!player.playing && !player.paused && !player.queue.size) {
         player.play()
       } else {
