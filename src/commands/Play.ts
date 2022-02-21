@@ -17,6 +17,8 @@ export const Play = new (class extends Command {
   public voiceOnly = true
 
   public async run({ soup, interaction, options }: IRun) {
+    await interaction.deferReply()
+
     const guildMember = interaction.member as GuildMember
     const permissions = guildMember.voice.channel.permissionsFor(soup.user)
 

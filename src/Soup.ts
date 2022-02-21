@@ -156,8 +156,6 @@ export class Soup extends Client {
   private async onSlashCommand(interaction: Interaction) {
     if (!interaction.isCommand()) return
 
-    await interaction.deferReply()
-
     const cmd = this.commands[interaction.commandName]
 
     if (!this.hasBasicPermissions(interaction.channel as TextChannel)) {
