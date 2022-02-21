@@ -50,6 +50,9 @@ export class Soup extends Client {
         clientId: process.env.SPOTIFY_CLIENTID,
         clientSecret: process.env.SPOTIFY_CLIENTSECRET,
         convertUnresolved: false,
+        albumPageLimit: 30,
+        playlistPageLimit: 30,
+        showPageLimit: 30,
       })],
   })
 
