@@ -38,13 +38,7 @@ export class Soup extends Client {
   public manager = new Manager({
     nodes: this.lavalinkNodes,
     defaultSearchPlatform: 'youtube music',
-    send: (id, data) => {
-      const guild = this.guilds.cache.get(data.d.guild_id)
-
-      if (!guild) return
-
-      guild.shard.send(data)
-    },
+    send: (id, p) => this.ws.shards.get(this.guildToShard(id, this.ws.shards.size)).send(p),
     plugins: [
       new AppleMusic(),
       new Spotify({
@@ -279,6 +273,10 @@ export class Soup extends Client {
         ], content: null,
       })
     }, 25 * 1000)
+  }
+
+  private guildToShard(id: string, shards: number) {
+    return Number((BigInt(id) >> 22n) % BigInt(shards))
   }
 }
 
