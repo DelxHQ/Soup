@@ -38,10 +38,12 @@ export class Soup extends Client {
   public manager = new Manager({
     nodes: this.lavalinkNodes,
     defaultSearchPlatform: 'youtube music',
-    send: (id, payload) => { // what is this?
-      const guild = this.guilds.cache.get(id)
+    send: (id, data) => {
+      const guild = this.guilds.cache.get(data.d.guild_id)
 
-      if (guild) guild.shard.send(payload)
+      if (!guild) return
+
+      guild.shard.send(data)
     },
     plugins: [
       new AppleMusic(),
@@ -217,9 +219,10 @@ export class Soup extends Client {
       ],
     })
 
+    const hasGuildPlayer = this.manager.players.has(guild.id)
     const guildPlayer = this.manager.players.get(guild.id)
 
-    if (guildPlayer) {
+    if (hasGuildPlayer) {
       guildPlayer.destroy()
     }
 
@@ -250,7 +253,9 @@ export class Soup extends Client {
   }
 
   private async doStatistics() {
-    const messages = (await this.soupChannels.statistics.messages.fetch()).map(m => m)
+    const messages = (await this.soupChannels.statistics.messages.fetch())
+      .map(m => m)
+      .filter(m => m.author.id == this.user.id)
 
     for (const message of messages) {
       message.delete()

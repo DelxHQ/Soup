@@ -42,7 +42,6 @@ export const Play = new (class extends Command {
     try {
       res = await player.search(options.getString('query'), interaction.member)
       if (res.loadType === 'LOAD_FAILED') {
-        if (!player.queue.current) player.destroy()
         throw res.exception
       }
     } catch (err) {
@@ -52,7 +51,6 @@ export const Play = new (class extends Command {
       if (!player.queue.current) player.destroy()
 
       interaction.editReply({ embeds: [Error('No results were found using your search query.')] })
-
 
     } else if (res.loadType == 'PLAYLIST_LOADED') {
       if (player.state !== 'CONNECTED') player.connect()
