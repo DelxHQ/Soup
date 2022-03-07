@@ -6,7 +6,6 @@ export const Shuffle = new (class extends Command {
   public name = 'shuffle'
   public description = 'Shuffle all the tracks in the queue'
   public options = []
-  public permissions = []
   public voiceOnly = true
 
   public async run({ soup, interaction }: IRun) {

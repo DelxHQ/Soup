@@ -12,7 +12,6 @@ export const ForcePlayerDestroy = new (class extends Command {
     required: true,
     type: Constants.ApplicationCommandOptionTypes.STRING,
   }]
-  public permissions = []
 
   public async run({ soup, interaction, options }: IRun) {
     const guildPlayer = soup.manager.players.get(options.getString('guildid'))

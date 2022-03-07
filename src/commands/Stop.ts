@@ -6,7 +6,6 @@ export const Stop = new (class extends Command {
   public name = 'stop'
   public description = 'Stops the current song and clears the queue.'
   public options = []
-  public permissions = []
   public voiceOnly = true
 
   public async run({ soup, interaction }: IRun) {

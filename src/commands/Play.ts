@@ -48,10 +48,7 @@ export const Play = new (class extends Command {
       interaction.editReply({ embeds: [Error(`An error occured trying to play this track. ${codeBlock(JSON.stringify(err.message))}`)] })
     }
     if (res.loadType == 'NO_MATCHES') {
-      if (!player.queue.current) player.destroy()
-
       interaction.editReply({ embeds: [Error('No results were found using your search query.')] })
-
     } else if (res.loadType == 'PLAYLIST_LOADED') {
       if (player.state !== 'CONNECTED') player.connect()
       player.queue.add(res.tracks)

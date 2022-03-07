@@ -12,7 +12,6 @@ export const Queue = new (class extends Command {
   public name = 'queue'
   public description = 'Display a list of songs in the queue.'
   public options = []
-  public permissions = []
   public voiceOnly = true
 
   public async run({ soup, interaction }: IRun) {

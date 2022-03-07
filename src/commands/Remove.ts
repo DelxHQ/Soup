@@ -12,7 +12,6 @@ export const Remove = new (class extends Command {
     required: true,
     type: Constants.ApplicationCommandOptionTypes.NUMBER,
   }]
-  public permissions = []
   public voiceOnly = true
 
   public async run({ soup, interaction, options }: IRun) {

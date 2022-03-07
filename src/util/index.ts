@@ -3,5 +3,4 @@
  */
 
 export * from './helpers'
-export * from './Permissions'
 export * from './progressBar'

@@ -6,7 +6,6 @@ export const Pause = new (class extends Command {
   public name = 'pause'
   public description = 'Pause/Resume the current playing track.'
   public options = []
-  public permissions = []
   public voiceOnly = true
 
   public async run({ soup, interaction }: IRun) {

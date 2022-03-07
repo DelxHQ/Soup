@@ -18,7 +18,6 @@ export const Loop = new (class extends Command {
     ],
   }]
 
-  public permissions = []
   public voiceOnly = true
 
   public async run({ soup, interaction, options }: IRun) {

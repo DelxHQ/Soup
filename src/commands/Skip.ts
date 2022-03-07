@@ -6,7 +6,6 @@ export const Skip = new (class extends Command {
   public name = 'skip'
   public description = 'Skips the current playing song.'
   public options = []
-  public permissions = []
   public voiceOnly = true
 
   public async run({ soup, interaction }: IRun) {
