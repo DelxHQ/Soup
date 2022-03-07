@@ -117,8 +117,6 @@ export class PlayerHandler {
     const guildChannel = await this.soup.channels.fetch(channel.id) as TextChannel
     const originalPlayingMessage = await guildChannel.messages.fetch(this.nowPlayingMessages.get(channel.id))
 
-    if (!guildChannel) return
-
     if (this.nowPlayingMessages.has(channel.id)) {
       this.nowPlayingMessages.delete(channel.id)
 
