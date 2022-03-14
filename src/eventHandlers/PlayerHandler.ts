@@ -121,8 +121,6 @@ export class PlayerHandler {
     const guild = this.soup.guilds.cache.get(player.guild)
     const guildChannel = await this.soup.channels.fetch(player.textChannel) as TextChannel
 
-    this.recreatePlayer(player) // TODO: Find out how to actually reopen a connection to the voice server
-
     switch(payload.code) {
       case 4014:
         player.destroy()
