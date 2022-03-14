@@ -32,7 +32,7 @@ export function RichEmbed(
 
 export function Error(msg: string): MessageEmbed {
   return RichEmbed('Error', msg, [], '', 'RED')
-    .setFooter('If you believe this error is incorrect, Don\'t hesitate to ask for help in our support server.')
+    .setFooter({ text: 'If you believe this error is incorrect, Don\'t hesitate to ask for help in our support server.' })
     .setURL('https://discord.gg/3pqz7tkHj9')
 }
 
@@ -49,11 +49,11 @@ export function Image(src: string, title?: string, desc?: string): MessageEmbed 
 
 export function Track(embedTitle: string, track: Track | UnresolvedTrack): MessageEmbed {
   const re = new RE()
-    .setAuthor(embedTitle)
+    .setAuthor({ name: embedTitle })
     .setTitle(track.title)
     .setDescription(track.author)
     .setURL(track.uri)
-    .setFooter(track.isStream ? 'LIVE' : duration(track.duration))
+    .setFooter({ text: track.isStream ? 'LIVE' : duration(track.duration) })
     .setColor('#f2df88')
 
   if (track.thumbnail) re.setThumbnail(track.displayThumbnail('mqdefault'))

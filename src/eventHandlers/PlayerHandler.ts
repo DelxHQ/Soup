@@ -65,9 +65,9 @@ export class PlayerHandler {
           ['Track', codeBlock(`${track.title} (${track.uri})`)],
           ['Error', codeBlock(payload.error)],
         ])
-          .setAuthor(guild.name)
+          .setAuthor({ name: guild.name })
           .setThumbnail(guild.iconURL({ dynamic: true }))
-          .setFooter(`GUILD ID: ${guild.id}`),
+          .setFooter({ text: `GUILD ID: ${guild.id}` }),
       ],
     })
     this.logger.error(`A Lavalink error has occured whilst trying to play a track. ${guild.name} (${guild.id}): ${payload.exception}`)
@@ -76,18 +76,10 @@ export class PlayerHandler {
   }
 
   private async onPlayerMove(player: Player, initChannel: string, newChannel: string) {
-    const textChannel = this.soup.channels.cache.get(player.textChannel) as TextChannel
+    player.setVoiceChannel(newChannel)
 
-    if (!newChannel) { // Assume we've been disconnected from the voice channel
-      this.deleteNowPlayingMessage(textChannel)
-
-      player.destroy()
-    } else {
-      player.setVoiceChannel(newChannel)
-
-      player.pause(true)
-      setTimeout(() => player.pause(false), 500)
-    }
+    player.pause(true)
+    setTimeout(() => player.pause(false), 500)
   }
 
   private async onPlayerDestroy(player: Player) {
@@ -95,20 +87,20 @@ export class PlayerHandler {
 
     this.deleteNowPlayingMessage(textChannel)
 
-    const messages = (await textChannel.messages.fetch({ limit: 100 })).filter(
-      m => m.type === 'APPLICATION_COMMAND',
-    )
-    if (!messages) return
+    // const messages = (await textChannel.messages.fetch({ limit: 100 })).filter(
+    //   m => m.type === 'APPLICATION_COMMAND',
+    // )
+    // if (!messages) return
 
-    textChannel.bulkDelete(messages, true)
+    // textChannel.bulkDelete(messages, true)
 
-    if (!textChannel.guild) return
+    // if (!textChannel.guild) return
 
     textChannel.send({embeds: [
       RichEmbed('Thank you for using Soup!', 'Please consider voting for Soup if it did well over at [TOP.GG](https://top.gg/bot/893245033208217621/vote)! This will help boost Soups popularity.', [])
         .setURL('https://top.gg/bot/893245033208217621/vote')
         .setThumbnail(this.soup.user.avatarURL({ dynamic: true })),
-    ]}).then(m => setTimeout(() => m.delete(), 10 * 1000))
+    ]})
 
     this.logger.info(`Destroyed player for ${textChannel.guild.name} (${textChannel.guild.name})`)
   }
@@ -127,16 +119,24 @@ export class PlayerHandler {
 
   private async onSocketClosed(player: Player, payload: WebSocketClosedEvent) {
     const guild = this.soup.guilds.cache.get(player.guild)
+    const guildChannel = await this.soup.channels.fetch(player.textChannel) as TextChannel
 
-    switch(payload.code) {
-      case 4014:
-        player.destroy()
-        break
-      case 4000:
-        this.logger.error(`Socket closed. Recreating player for guild ID: ${player.guild} `)
-        this.recreatePlayer(player)
-        break
-    }
+    this.recreatePlayer(player) // TODO: Find out how to actually reopen a connection to the voice server
+
+    // if (payload.code === 4000) {
+    //   player.destroy()
+    //   guildChannel.send({ embeds: [Error('An unrecoverable error has occured causing me to leave the voice chanel.')] })
+    // }
+
+    // switch(payload.code) {
+    //   case 4014:
+    //     player.destroy()
+    //     break
+    //   case 4000:
+    //     this.logger.error(`Socket closed. Recreating player for guild ID: ${player.guild} `)
+    //     this.recreatePlayer(player)
+    //     break
+    // }
 
     this.soup.soupChannels.logs.send({
       embeds: [
@@ -144,9 +144,9 @@ export class PlayerHandler {
           ['Reason', codeBlock(payload.reason)],
           ['Code', codeBlock(payload.code)],
         ])
-          .setAuthor(guild.name)
+          .setAuthor({ name: guild.name })
           .setThumbnail(guild.iconURL({ dynamic: true }))
-          .setFooter(`GUILD ID: ${guild.id}`),
+          .setFooter({ text: `GUILD ID: ${guild.id}` }),
       ],
     })
     this.logger.error(`Socket closed. ${guild.name} (${guild.id}): ${payload.reason}`)
@@ -165,9 +165,9 @@ export class PlayerHandler {
     this.soup.soupChannels.logs.send({
       embeds: [
         RichEmbed('A track has gotten stuck.', '', [])
-          .setAuthor(guild.name)
+          .setAuthor({ name: guild.name })
           .setThumbnail(guild.iconURL({ dynamic: true }))
-          .setFooter(`GUILD ID: ${guild.id}`),
+          .setFooter({ text: `GUILD ID: ${guild.id}` }),
       ],
     })
     this.logger.error(`A track has gotten stuck. ${guild.name} (${guild.id})`)
@@ -179,7 +179,7 @@ export class PlayerHandler {
   * Should only be used when the websocket dies during playback.
   */
   private async recreatePlayer(oldPlayer: Player) {
-    oldPlayer.destroy(true)
+    oldPlayer.destroy()
 
     const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
     await sleep(500)
