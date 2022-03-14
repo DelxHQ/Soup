@@ -1,27 +1,27 @@
-# # Build the code
-# FROM node:alpine as code-builder
+# Build the code
+FROM node:alpine as code-builder
 
-# RUN apk add --no-cache \
-#     python3 \
-#     make \
-#     g++
+RUN apk add --no-cache \
+    python3 \
+    make \
+    g++
 
-# COPY . /app
-# WORKDIR /app
+COPY . /app
+WORKDIR /app
 
-# RUN npm ci
-# RUN npm run build
+RUN npm ci
+RUN npm run build
 
-# RUN rm -rf src node_modules
+RUN rm -rf src node_modules
 
 
 # Install prod deps (some are addons so g++ is required)
 FROM node:alpine as prod-deps
 
-# RUN apk add --no-cache \
-#     python3 \
-#     make \
-#     g++
+RUN apk add --no-cache \
+    python3 \
+    make \
+    g++
 
 ENV NODE_ENV=production
 
