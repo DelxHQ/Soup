@@ -123,20 +123,13 @@ export class PlayerHandler {
 
     this.recreatePlayer(player) // TODO: Find out how to actually reopen a connection to the voice server
 
-    // if (payload.code === 4000) {
-    //   player.destroy()
-    //   guildChannel.send({ embeds: [Error('An unrecoverable error has occured causing me to leave the voice chanel.')] })
-    // }
-
-    // switch(payload.code) {
-    //   case 4014:
-    //     player.destroy()
-    //     break
-    //   case 4000:
-    //     this.logger.error(`Socket closed. Recreating player for guild ID: ${player.guild} `)
-    //     this.recreatePlayer(player)
-    //     break
-    // }
+    switch(payload.code) {
+      case 4014:
+        player.destroy()
+        break
+      default:
+        this.recreatePlayer(player)
+    }
 
     this.soup.soupChannels.logs.send({
       embeds: [
