@@ -29,8 +29,6 @@ COPY --from=code-builder /app /app
 WORKDIR /app
 
 RUN npm ci
-RUN npm run build
-RUN rm -rf src node_modules
 
 
 # Create slim prod image
