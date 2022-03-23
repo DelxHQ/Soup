@@ -187,9 +187,10 @@ export class PlayerHandler {
     }
 
     if (oldPlayer.queue.current) {
-      newPlayer.play(newPlayer.queue.current).then(() =>
-        newPlayer.seek(oldPlayer.position),
-      )
+      newPlayer.play(newPlayer.queue.current).then(async () => {
+        await sleep(500)
+        newPlayer.seek(oldPlayer.position)
+      })
     }
   }
 
