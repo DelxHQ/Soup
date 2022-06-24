@@ -31,7 +31,19 @@ services:
       - "LOGS_CHANNEL=897300434094522379"
       - "STATISTICS_CHANNEL=908292838867992586"
       - "NODE_ENV=production"
-      
+  bot3:
+    image: "ghcr.io/delxhq/soup:latest"
+    networks:
+      - soup
+    environment:
+      - "DISCORD_TOKEN=${TOKEN_3}"
+      - "SPOTIFY_CLIENTID=${SPOTIFY_CLIENT}"
+      - "SPOTIFY_CLIENTSECRET=${SPOTIFY_SECRET}"
+      - "LAVALINK_HOST=lavalink"
+      - "LAVALINK_PORT=2333"
+      - "LOGS_CHANNEL=897300434094522379"
+      - "STATISTICS_CHANNEL=908292838867992586"
+      - "NODE_ENV=production"
 networks:
   soup:
     driver: bridge
