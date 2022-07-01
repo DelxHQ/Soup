@@ -167,7 +167,10 @@ export class Soup extends Client {
       if (cmd.voiceOnly && !(interaction.member as GuildMember).voice.channel) {
         return interaction.reply({ embeds: [ErrorEmbed(`You need to be in a voice channel to run the \`${cmd.name}\` command.`)], ephemeral: true })
       } else if (this.manager.players.get(interaction.guild.id)) {
-        if (cmd.voiceOnly && (interaction.member as GuildMember).voice.channel.id != this.manager.players.get(interaction.guild.id).voiceChannel) {
+        if (
+          cmd.voiceOnly &&
+          (interaction.member as GuildMember).voice.channel.id != this.manager.players.get(interaction.guild.id).voiceChannel
+        ) {
           return interaction.reply({ embeds: [ErrorEmbed(`You need to be in the same voice as the player to run the \`${cmd.name}\` command.`)], ephemeral: true })
         }
       }

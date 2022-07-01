@@ -4,11 +4,13 @@ import { Player, Track, TrackExceptionEvent, TrackStuckEvent, UnresolvedTrack, W
 import { Soup } from '../Soup'
 import { codeBlock, Error, RichEmbed, Track as GuildTrack } from '../util'
 
+export const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
+
 export class PlayerHandler {
 
   private nowPlayingMessages: Map<string, string> = new Map()
 
-  private logger: Logger = new Logger('PlayerHandler')
+  private logger: Logger = new Logger(this.constructor.name)
 
   constructor(private soup: Soup) {
     this.soup.manager.on('trackStart', (player, track) => this.onTrackStart(player, track))
@@ -172,7 +174,6 @@ export class PlayerHandler {
   private async recreatePlayer(oldPlayer: Player) {
     oldPlayer.destroy()
 
-    const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
     await sleep(500)
 
     const newPlayer = this.soup.manager.create(
