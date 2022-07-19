@@ -114,14 +114,12 @@ export class PlayerHandler {
     if (this.nowPlayingMessages.has(channel.id)) {
       this.nowPlayingMessages.delete(channel.id)
 
-      if (originalPlayingMessage)
-        originalPlayingMessage.delete()
+      if (originalPlayingMessage) originalPlayingMessage.delete()
     }
   }
 
   private async onSocketClosed(player: Player, payload: WebSocketClosedEvent) {
     const guild = this.soup.guilds.cache.get(player.guild)
-    const guildChannel = await this.soup.channels.fetch(player.textChannel) as TextChannel
 
     switch(payload.code) {
       case 4014:
