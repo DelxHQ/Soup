@@ -1,5 +1,5 @@
 import { Soup } from './Soup'
-import { ApplicationCommandOptionData, BaseCommandInteraction, CommandInteractionOptionResolver, PermissionFlags } from 'discord.js'
+import { ApplicationCommandOptionData, BaseCommandInteraction, CommandInteractionOptionResolver } from 'discord.js'
 
 export interface IRun {
   soup: Soup,

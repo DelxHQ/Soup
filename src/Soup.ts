@@ -7,7 +7,6 @@ import Spotify from 'better-erela.js-spotify'
 import AppleMusic from 'better-erela.js-apple'
 import { PlayerHandler } from './eventHandlers/PlayerHandler'
 import { codeBlock, Error as ErrorEmbed, RichEmbed, secondsToDhms } from './util'
-import { ServerlistManager } from './managers/ServerlistManager'
 
 interface IChannels {
   logs: TextChannel,
@@ -37,7 +36,7 @@ export class Soup extends Client {
 
   public manager = new Manager({
     nodes: this.lavalinkNodes,
-    defaultSearchPlatform: 'youtube music',
+    defaultSearchPlatform: 'youtube',
     send: (id, p) => this.ws.shards.get(this.guildToShard(id, this.ws.shards.size)).send(p),
     plugins: [
       new AppleMusic(),
@@ -92,8 +91,6 @@ export class Soup extends Client {
 
     new PlayerHandler(this)
 
-    const listManager = new ServerlistManager(this)
-
     if (process.env.LOGS_CHANNEL) {
       this.soupChannels.logs.send({
         embeds: [
@@ -112,12 +109,6 @@ export class Soup extends Client {
     this.on('warn', message => this.logger.warn(message))
     this.on('error', error => this.logger.error(error))
     this.on('raw', d => this.manager.updateVoiceState(d))
-
-    if (process.env.TOP_GG_TOKEN) {
-      setInterval(async () => await listManager.sendServerCount(), 300 * 1000)
-    } else {
-      this.logger.warn('TOP.GG token not set. Will not send server count.')
-    }
 
     this.doStatistics()
 
@@ -216,12 +207,9 @@ export class Soup extends Client {
       ],
     })
 
-    const hasGuildPlayer = this.manager.players.has(guild.id)
     const guildPlayer = this.manager.players.get(guild.id)
 
-    if (hasGuildPlayer) {
-      guildPlayer.destroy()
-    }
+    if (guildPlayer) guildPlayer.destroy()
 
     this.logger.info(`Removed from a guild. ${guild.name} (${guild.id})`)
   }
