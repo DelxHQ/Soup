@@ -260,6 +260,8 @@ export class Soup extends Client {
 
     const message = await this.soupChannels.statistics.send('`Awaiting statistics...`')
 
+    const playingPlayers = this.manager.players.filter(p => p.playing).size
+
     setInterval(() => {
       const memoryUsed = process.memoryUsage().heapUsed / 1024 / 1024
       message.edit({
@@ -267,7 +269,7 @@ export class Soup extends Client {
           RichEmbed('Statistics', '', [
             ['Guilds', codeBlock(this.guilds.cache.size)],
             ['Players', codeBlock(this.manager.nodes.first().connected ? this.manager.players.size : 'Node not connected.')],
-            ['Playing Players', codeBlock(this.manager.nodes.first().connected ? this.manager.nodes.first().stats.playingPlayers : 'Node not connected.')],
+            ['Playing Players', codeBlock(this.manager.nodes.first().connected ? playingPlayers : 'Node not connected.')],
             ['Total Lavalink Nodes', codeBlock(this.manager.nodes.size)],
             ['Memory Usage', codeBlock(Math.round(memoryUsed * 100) / 100 + 'MB')],
             ['Gateway Ping', codeBlock(this.ws.ping + 'ms')],
