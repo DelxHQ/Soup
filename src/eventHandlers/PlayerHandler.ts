@@ -72,7 +72,7 @@ export class PlayerHandler {
           .setFooter({ text: `GUILD ID: ${guild.id}` }),
       ],
     })
-    this.logger.error(`A Lavalink error has occured whilst trying to play a track. ${guild.name} (${guild.id}): ${payload.exception}`)
+    this.logger.error(`A Lavalink error has occured whilst trying to play a track. ${guild.name} (${guild.id}): ${payload.error}: ${payload.exception.message}`)
 
     this.deleteNowPlayingMessage(textChannel)
   }
@@ -103,6 +103,10 @@ export class PlayerHandler {
         .setURL('https://top.gg/bot/893245033208217621/vote')
         .setThumbnail(this.soup.user.avatarURL({ dynamic: true })),
     ]})
+      .then(async m => {
+        await sleep(10 * 1000)
+        if (m.deletable) m.delete()
+      })
 
     this.logger.info(`Destroyed player for ${textChannel.guild.name} (${textChannel.guild.name})`)
   }
