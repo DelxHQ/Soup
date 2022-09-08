@@ -38,6 +38,8 @@ export const Queue = new (class extends Command {
   private async sendQueue(interaction: BaseCommandInteraction, player: Player, page = 1, message?: Message) {
     const pages = player.queue.length <= PAGE_SIZE ? 1 : Math.ceil(player.queue.length / PAGE_SIZE)
 
+    if (player.queue.length <= 0) return interaction.reply({ embeds: [RichEmbed('', 'There are currently no tracks queued.')] })
+
     const embed = RichEmbed(
       'Song Queue', '',
       player.queue.slice(page === 1 ? 0 : (page - 1) * PAGE_SIZE, page * PAGE_SIZE).map((t, i) => [
