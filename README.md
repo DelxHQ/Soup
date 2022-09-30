@@ -9,7 +9,7 @@
 </p>
 
 <h1 align="center">Warning</h1>
-<h3 align="center">Soup is in early development!</h3>
+<h3 align="center">Soup is in early development! There's a lot of bugs</h3>
 
 ## Running
 Define your env varibles. Then simply run `npm run start` or `yarn start` if using yarn.
