@@ -4,9 +4,9 @@ on:
     branches: [ main ]
 
 jobs:
-  build-soup-image:
-    name: Build
+  publish-soup-image:
     runs-on: ubuntu-latest
+
     steps:
     - uses: actions/checkout@v2
 
@@ -16,8 +16,13 @@ jobs:
         registry: ghcr.io
         username: ${{ github.actor }}
         password: ${{ secrets.CR_PAT }}
+        
+    - name: Extract branch name
+      shell: bash
+      run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
+      id: extract_branch
 
     - name: Build the Soup Docker image
       run: |
-        docker build . --tag ghcr.io/delxhq/soup:latest
-        docker push ghcr.io/delxhq/soup:latest
+        docker build . --tag ghcr.io/delxhq/soup:${{ steps.extract_branch.outputs.branch }}
+        docker push ghcr.io/delxhq/soup:${{ steps.extract_branch.outputs.branch }}
