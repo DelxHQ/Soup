@@ -4,7 +4,7 @@ services:
     image: "ghcr.io/delxhq/soup-lavalink-image:main"
     hostname: lavalink
     networks:
-      - soup
+      - host
     environment:
       - "LAVALINK_SERVER_YOUTUBE_CONFIG_EMAIL=${GOOGLE_EMAIL}"
       - "LAVALINK_SERVER_YOUTUBE_CONFIG_PASSWORD=${GOOGLE_PASSWORD}"
