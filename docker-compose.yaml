@@ -4,7 +4,7 @@ services:
     image: "ghcr.io/delxhq/soup-lavalink-image:main"
     hostname: lavalink
     networks:
-      - host
+      - soup
     environment:
       - "LAVALINK_SERVER_YOUTUBE_CONFIG_EMAIL=${GOOGLE_EMAIL}"
       - "LAVALINK_SERVER_YOUTUBE_CONFIG_PASSWORD=${GOOGLE_PASSWORD}"
@@ -12,7 +12,7 @@ services:
   bot1:
     image: "ghcr.io/delxhq/soup:latest"
     networks:
-      - host
+      - soup
     environment:
       - "DISCORD_TOKEN=${TOKEN_1}"
       - "SPOTIFY_CLIENTID=${SPOTIFY_CLIENT}"
@@ -25,7 +25,7 @@ services:
   bot2:
     image: "ghcr.io/delxhq/soup:latest"
     networks:
-      - host
+      - soup
     environment:
       - "DISCORD_TOKEN=${TOKEN_2}"
       - "SPOTIFY_CLIENTID=${SPOTIFY_CLIENT}"
@@ -38,7 +38,7 @@ services:
   bot3:
     image: "ghcr.io/delxhq/soup:latest"
     networks:
-      - host
+      - soup
     environment:
       - "DISCORD_TOKEN=${TOKEN_3}"
       - "SPOTIFY_CLIENTID=${SPOTIFY_CLIENT}"
@@ -49,5 +49,9 @@ services:
       - "STATISTICS_CHANNEL=908292838867992586"
       - "NODE_ENV=production"
 networks:
-  host:
-    external: true
+  soup:
+    driver: host
+    enable_ipv6: true
+    ipam:
+       config:
+         - subnet: 2001:41d0:801:2000::8e2/64
