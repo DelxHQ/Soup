@@ -12,7 +12,7 @@ services:
   bot1:
     image: "ghcr.io/delxhq/soup:latest"
     networks:
-      - soup
+      - host
     environment:
       - "DISCORD_TOKEN=${TOKEN_1}"
       - "SPOTIFY_CLIENTID=${SPOTIFY_CLIENT}"
@@ -25,7 +25,7 @@ services:
   bot2:
     image: "ghcr.io/delxhq/soup:latest"
     networks:
-      - soup
+      - host
     environment:
       - "DISCORD_TOKEN=${TOKEN_2}"
       - "SPOTIFY_CLIENTID=${SPOTIFY_CLIENT}"
@@ -38,7 +38,7 @@ services:
   bot3:
     image: "ghcr.io/delxhq/soup:latest"
     networks:
-      - soup
+      - host
     environment:
       - "DISCORD_TOKEN=${TOKEN_3}"
       - "SPOTIFY_CLIENTID=${SPOTIFY_CLIENT}"
