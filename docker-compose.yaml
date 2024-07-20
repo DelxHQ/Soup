@@ -5,6 +5,10 @@ services:
     hostname: lavalink
     networks:
       - soup
+    environment:
+      - "LAVALINK_SERVER_YOUTUBE_CONFIG_EMAIL=${GOOGLE_EMAIL}"
+      - "LAVALINK_SERVER_YOUTUBE_CONFIG_PASSWORD=${GOOGLE_PASSWORD}"
+
   bot1:
     image: "ghcr.io/delxhq/soup:latest"
     networks:
