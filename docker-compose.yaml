@@ -46,5 +46,4 @@ services:
       - "NODE_ENV=production"
 networks:
   soup:
-    external: true
     driver: bridge
