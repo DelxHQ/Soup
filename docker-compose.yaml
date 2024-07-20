@@ -49,9 +49,5 @@ services:
       - "STATISTICS_CHANNEL=908292838867992586"
       - "NODE_ENV=production"
 networks:
-  soup:
-    driver: bridge
-    enable_ipv6: true
-    ipam:
-       config:
-         - subnet: 2001:41d0:801:2000::8e2/64
+  host:
+    external: true
